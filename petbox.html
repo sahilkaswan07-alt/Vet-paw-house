@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>pet box</title>
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="petbox.css">
+   <script src="theme.js"></script>
+   <style>
+     /* ===== Owner photo upload tile ===== */
+     .upload-tile{
+       display:flex; flex-direction:column; align-items:center; justify-content:center;
+       gap:6px; aspect-ratio:1/1; border-radius:14px;
+       border:2px dashed rgba(244,162,77,.55);
+       background:rgba(244,162,77,.06);
+       cursor:pointer; text-align:center; padding:10px;
+       transition:transform .15s ease, filter .15s ease, border-color .15s ease;
+       color:#f4a24d; font-family:'Inter',sans-serif;
+     }
+     .upload-tile:hover{ filter:brightness(1.12); transform:scale(1.02); border-color:rgba(244,162,77,.9); }
+     .upload-tile:active{ transform:scale(0.97); }
+     .upload-tile .up-icon{ font-size:26px; line-height:1; }
+     .upload-tile .up-label{ font-size:13px; font-weight:600; }
+     .upload-tile .up-sub{ font-size:11px; opacity:.75; font-weight:400; }
+     .upload-tile.locked{
+       cursor:not-allowed; border-color:rgba(255,255,255,.18);
+       background:rgba(255,255,255,.03); color:rgba(255,255,255,.55);
+     }
+     .upload-tile.locked:hover{ filter:none; transform:none; }
+     .gallery-note{
+       margin-top:10px; font-size:12px; color:rgba(255,255,255,.55);
+       font-family:'Inter',sans-serif; text-align:center;
+     }
+     .gallery-toast{
+       position:fixed; left:50%; bottom:28px; transform:translateX(-50%) translateY(20px);
+       background:#1b1e27; border:1px solid rgba(244,162,77,.4); color:#fff;
+       padding:12px 18px; border-radius:10px; font-family:'Inter',sans-serif; font-size:13px;
+       opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease;
+       z-index:999; max-width:80vw; text-align:center;
+     }
+     .gallery-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+     /* ===== BCS (Body Condition Score) monthly check-in ===== */
+     .bcs-intro{
+       font-family:'Inter',sans-serif; font-size:13.5px; line-height:1.5;
+       color:rgba(255,255,255,.65); margin-bottom:18px; max-width:640px;
+     }
+     .bcs-q{ margin-bottom:20px; }
+     .bcs-q-text{
+       font-family:'Inter',sans-serif; font-size:14.5px; font-weight:600;
+       color:#fff; margin-bottom:10px;
+     }
+     .bcs-opts{ display:flex; flex-direction:column; gap:8px; }
+     .bcs-opt{
+       text-align:left; font-family:'Inter',sans-serif; font-size:13.5px;
+       color:rgba(255,255,255,.82); background:rgba(255,255,255,.04);
+       border:1.5px solid rgba(255,255,255,.12); border-radius:10px;
+       padding:10px 14px; cursor:pointer;
+       transition:border-color .15s ease, background .15s ease, transform .1s ease;
+     }
+     .bcs-opt:hover{ border-color:rgba(244,162,77,.55); background:rgba(244,162,77,.07); }
+     .bcs-opt:active{ transform:scale(0.99); }
+     .bcs-opt.selected{
+       border-color:#f4a24d; background:rgba(244,162,77,.16); color:#fff; font-weight:600;
+     }
+     .bcs-submit{
+       margin-top:6px; font-family:'Inter',sans-serif; font-weight:700; font-size:14px;
+       color:#1b1108; background:#f4a24d; border:none; border-radius:10px;
+       padding:12px 22px; cursor:pointer; transition:filter .15s ease, transform .1s ease, opacity .15s ease;
+     }
+     .bcs-submit:hover:not(:disabled){ filter:brightness(1.08); }
+     .bcs-submit:active:not(:disabled){ transform:scale(0.98); }
+     .bcs-submit:disabled{ opacity:.4; cursor:not-allowed; }
+
+     .bcs-result-card{
+       display:flex; align-items:center; gap:18px; background:rgba(244,162,77,.08);
+       border:1px solid rgba(244,162,77,.35); border-radius:14px; padding:18px 20px;
+       margin-bottom:14px;
+     }
+     .bcs-result-num{
+       font-family:'Playfair Display',serif; font-weight:900; font-size:40px;
+       color:#f4a24d; line-height:1; min-width:56px; text-align:center;
+     }
+     .bcs-result-info .bcs-result-cat{
+       font-family:'Inter',sans-serif; font-weight:700; font-size:16px; color:#fff; margin-bottom:2px;
+     }
+     .bcs-result-info .bcs-result-desc{
+       font-family:'Inter',sans-serif; font-size:13px; color:rgba(255,255,255,.65);
+     }
+     .bcs-note{
+       font-family:'Inter',sans-serif; font-size:12.5px; color:rgba(255,255,255,.55);
+       margin-bottom:14px; line-height:1.5;
+     }
+     .bcs-locked-msg{
+       font-family:'Inter',sans-serif; font-size:13.5px; color:rgba(255,255,255,.65);
+       margin-bottom:14px;
+     }
+     details.bcs-table-toggle{
+       font-family:'Inter',sans-serif; font-size:13px; color:rgba(255,255,255,.75);
+       margin-bottom:16px; border:1px solid rgba(255,255,255,.12); border-radius:10px; padding:10px 14px;
+     }
+     details.bcs-table-toggle summary{ cursor:pointer; font-weight:600; color:#f4a24d; }
+     .bcs-mini-table{ width:100%; border-collapse:collapse; margin-top:10px; font-size:12.5px; }
+     .bcs-mini-table th, .bcs-mini-table td{
+       text-align:left; padding:6px 8px; border-bottom:1px solid rgba(255,255,255,.08);
+       color:rgba(255,255,255,.75);
+     }
+     .bcs-mini-table th{ color:#fff; font-weight:700; }
+     .bcs-mini-table tr.current-row td{ color:#f4a24d; font-weight:700; }
+     .bcs-history{ margin-top:6px; }
+     .bcs-history-title{
+       font-family:'Inter',sans-serif; font-size:12.5px; font-weight:700;
+       color:rgba(255,255,255,.55); text-transform:uppercase; letter-spacing:.04em;
+       margin-bottom:8px;
+     }
+     .bcs-history-row{
+       display:flex; justify-content:space-between; font-family:'Inter',sans-serif;
+       font-size:13px; color:rgba(255,255,255,.72); padding:7px 0;
+       border-bottom:1px solid rgba(255,255,255,.06);
+     }
+     .bcs-history-row span.bcs-h-cat{ color:rgba(255,255,255,.5); }
+
+     /* ===== REMINDER BELL + POPUP (vaccine / deworming due alerts) ===== */
+     .reminder-bell{
+       position:fixed; top:84px; right:22px; z-index:500;
+       width:50px; height:50px; border-radius:50%;
+       background:#1b1e27; border:1.5px solid rgba(244,162,77,.4);
+       display:flex; align-items:center; justify-content:center;
+       font-size:22px; cursor:pointer; user-select:none;
+       box-shadow:0 4px 14px rgba(0,0,0,.35);
+       transition:transform .15s ease, filter .15s ease, border-color .15s ease;
+     }
+     .reminder-bell:hover{ filter:brightness(1.15); transform:scale(1.06); border-color:rgba(244,162,77,.85); }
+     .reminder-bell:active{ transform:scale(0.94); }
+     .reminder-bell.has-due{ animation:reminderPulse 1.6s ease-in-out infinite; }
+     @keyframes reminderPulse{
+       0%,100%{ box-shadow:0 4px 14px rgba(0,0,0,.35), 0 0 0 0 rgba(224,90,90,.45); }
+       50%{ box-shadow:0 4px 14px rgba(0,0,0,.35), 0 0 0 8px rgba(224,90,90,0); }
+     }
+     .reminder-badge{
+       position:absolute; top:-4px; right:-4px; min-width:20px; height:20px;
+       padding:0 5px; border-radius:10px; background:#e05a5a; color:#fff;
+       font-family:'Inter',sans-serif; font-size:11.5px; font-weight:700;
+       display:flex; align-items:center; justify-content:center;
+       border:2px solid #0d0f14;
+     }
+
+     .reminder-modal-overlay{
+       position:fixed; inset:0; background:rgba(8,9,13,.72);
+       display:none; align-items:center; justify-content:center;
+       z-index:600; padding:20px; backdrop-filter:blur(2px);
+     }
+     .reminder-modal-overlay.open{ display:flex; }
+     .reminder-modal{
+       width:100%; max-width:420px; max-height:80vh; overflow-y:auto;
+       background:#161922; border:1px solid rgba(244,162,77,.35);
+       border-radius:16px; padding:24px 22px; position:relative;
+       box-shadow:0 20px 60px rgba(0,0,0,.5);
+     }
+     .reminder-modal-close{
+       position:absolute; top:14px; right:14px; width:30px; height:30px;
+       border-radius:50%; border:none; background:rgba(255,255,255,.08);
+       color:#fff; font-size:15px; cursor:pointer;
+       transition:background .15s ease;
+     }
+     .reminder-modal-close:hover{ background:rgba(255,255,255,.18); }
+     .reminder-modal-title{
+       font-family:'Playfair Display',serif; font-weight:900; font-size:19px;
+       color:#fff; margin-bottom:4px; padding-right:24px;
+     }
+     .reminder-modal-sub{
+       font-family:'Inter',sans-serif; font-size:12.5px; color:rgba(255,255,255,.55);
+       margin-bottom:16px;
+     }
+     .reminder-item{
+       display:flex; align-items:center; gap:12px;
+       background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08);
+       border-radius:12px; padding:12px 14px; margin-bottom:10px;
+     }
+     .reminder-item-icon{ font-size:20px; line-height:1; }
+     .reminder-item-info{ flex:1; min-width:0; }
+     .reminder-item-name{
+       font-family:'Inter',sans-serif; font-weight:600; font-size:13.5px; color:#fff;
+     }
+     .reminder-item-date{
+       font-family:'Inter',sans-serif; font-size:12px; color:rgba(255,255,255,.55); margin-top:2px;
+     }
+     .reminder-item-status{
+       font-family:'Inter',sans-serif; font-weight:700; font-size:11px;
+       padding:4px 10px; border-radius:20px; white-space:nowrap; text-transform:uppercase; letter-spacing:.03em;
+     }
+     .reminder-item-status.due{ background:rgba(244,162,77,.18); color:#f4a24d; }
+     .reminder-item-status.miss{ background:rgba(224,90,90,.18); color:#e05a5a; }
+     .reminder-empty{
+       font-family:'Inter',sans-serif; font-size:13.5px; color:rgba(255,255,255,.6);
+       text-align:center; padding:20px 0;
+     }
+   </style>
+</head> 
+<body data-reg-id="PASTE_FIRESTORE_DOC_ID_HERE">
+    <!-- ↑ IMPORTANT: replace PASTE_FIRESTORE_DOC_ID_HERE with this pet's
+         document ID from Firebase Console → Firestore → registrations
+         collection. Do this once each time you duplicate this file for a
+         new pet — without it, vaccine reminder emails can't be sent. -->
+    <canvas id="bg-canvas"></canvas>
+ 
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="home.html" class="nav-logo">🐾 Vet Paw House</a>
+  <a href="home.html" class="nav-back">← Back to Pets</a>
+</nav>
+
+<!-- REMINDER BELL — shows a badge count (like a cart) of due/missed vaccine & deworming items -->
+<div class="reminder-bell" id="reminderBell" onclick="openReminderModal()" title="Care reminders">
+  🔔
+  <span class="reminder-badge" id="reminderBadge" style="display:none;">0</span>
+</div>
+
+<!-- REMINDER POPUP -->
+<div class="reminder-modal-overlay" id="reminderModalOverlay" onclick="if(event.target===this) closeReminderModal();">
+  <div class="reminder-modal">
+    <button class="reminder-modal-close" onclick="closeReminderModal()">✕</button>
+    <div class="reminder-modal-title">🐾 Care Reminders</div>
+    <div class="reminder-modal-sub" id="reminderModalSub"></div>
+    <div class="reminder-modal-list" id="reminderModalList"></div>
+  </div>
+</div>
+ 
+<div class="page">
+ 
+  <!-- ① PET HERO — edit name, breed, photo, chips per pet -->
+  <div class="pet-hero">
+    <img src="casper.jpg" alt="Casper">
+    <div class="pet-hero-info">
+      <h1>Casper</h1>
+      <div class="breed">Pit-Bull</div>
+      <div class="pet-chips">
+        <span class="chip orange">Dog</span>
+        <span class="chip purple">Male</span>
+        <span class="chip blue">2 yrs</span>
+        <span class="chip pink">20 kg</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ①.5 PET ID CARD — downloadable digital ID card + QR code.
+       Edit the fields below to match this pet (same data as the Pet Hero
+       above, plus Owner Name / Owner Contact from the registration form).
+       "Pet ID" and "Member Since" are just simple identifiers you can set
+       once per pet. The QR code always encodes THIS page's own URL, so
+       scanning it (e.g. from a printed tag) opens this pet's profile —
+       no manual editing needed for the QR itself. -->
+  <div class="sec">
+    <div class="sec-title"><span class="icon">🪪</span> Pet ID Card</div>
+    <div class="idcard" id="idCard">
+      <div class="idcard-photo-col">
+        <img class="idcard-photo" id="idCardPhoto" src="casper.jpg" alt="Casper">
+        <div class="idcard-code" id="idCardCode">PH-CASPER</div>
+      </div>
+      <div class="idcard-info">
+        <div class="idcard-field"><div class="label">Pet Name</div><div class="value" id="idCardName">Casper</div></div>
+        <div class="idcard-field"><div class="label">Breed</div><div class="value" id="idCardBreed">Pit-Bull</div></div>
+        <div class="idcard-field"><div class="label">Sex</div><div class="value" id="idCardSex">Male</div></div>
+        <div class="idcard-field"><div class="label">Age</div><div class="value" id="idCardAge">2 yrs</div></div>
+        <div class="idcard-field"><div class="label">Weight</div><div class="value" id="idCardWeight">20 kg</div></div>
+        <div class="idcard-field"><div class="label">Member Since</div><div class="value" id="idCardSince">2026</div></div>
+        <div class="idcard-field"><div class="label">Owner Name</div><div class="value" id="idCardOwnerName">sahil choudhary</div></div>
+        <div class="idcard-field"><div class="label">Owner Contact</div><div class="value" id="idCardOwnerContact">+91 7300479727</div></div>
+      </div>
+      <div class="idcard-qr-col">
+        <div class="idcard-qr-box" id="idQrCode"></div>
+        <div class="idcard-qr-label">Scan for pet profile</div>
+      </div>
+    </div>
+    <div class="idcard-actions">
+      <button class="idcard-btn" onclick="downloadIdCard()">⬇️ Download ID Card (Front &amp; Back)</button>
+      <button class="idcard-btn ghost" onclick="downloadQrOnly()">⬇️ Download QR Only</button>
+    </div>
+  </div>
+
+  <!-- ② VACCINATION SCHEDULE — edit rows per pet -->
+ 
+  <!-- These rows are auto-replaced at load time from this pet's entry in
+       pet-schedules.js (window.PET_ID = 'casper' above tells it which entry
+       to use). Add/edit vaccines there — not here — and this table AND the
+       home.html bell both update automatically. The hardcoded rows below
+       only show up if this pet has no entry yet in pet-schedules.js. -->
+  <div class="sec">
+    <div class="sec-title"><span class="icon">💉</span> Vaccination Schedule</div>
+    <table class="sched-table">
+      <thead>
+        <tr>
+          <th>Vaccine</th>
+          <th class="col-tick">Done</th>
+          <th class="col-date">Date</th>
+        </tr>
+      </thead>
+      <tbody id="vaxTbody">
+        <tr data-remind-type="vaccination" data-due="2026-07-21" data-item-id="vax-dhppi">
+          <td>DHPPi (Core Vaccine)</td>
+          <td class="col-tick"><label class="tick"><input type="checkbox" onchange="toggleDone(this)" aria-label="Mark as done"><span class="tick-box"></span></label></td>
+          <td class="col-date">21 Jul 2026</td>
+        </tr>
+        <tr data-remind-type="vaccination" data-due="2026-07-21" data-item-id="vax-rabies">
+          <td>Rabies</td>
+          <td class="col-tick"><label class="tick"><input type="checkbox" onchange="toggleDone(this)" aria-label="Mark as done"><span class="tick-box"></span></label></td>
+          <td class="col-date">21 Jul 2026</td>
+        </tr>
+        <tr data-remind-type="vaccination" data-due="2026-07-21" data-item-id="vax-lepto">
+          <td>Leptospirosis</td>
+          <td class="col-tick"><label class="tick"><input type="checkbox" onchange="toggleDone(this)" aria-label="Mark as done"><span class="tick-box"></span></label></td>
+          <td class="col-date">21 Jul 2026</td>
+        </tr>
+        <tr data-remind-type="vaccination" data-due="2026-07-21" data-item-id="vax-booster">
+          <td>Booster Dose</td>
+          <td class="col-tick"><label class="tick"><input type="checkbox" onchange="toggleDone(this)" aria-label="Mark as done"><span class="tick-box"></span></label></td>
+          <td class="col-date">21 Jul 2026</td>
+        </tr>
+        <!-- Add more rows — set data-due to the YYYY-MM-DD version of the date shown,
+             and give each a unique data-item-id (used to remember the owner's tick):
+        <tr data-remind-type="vaccination" data-due="YYYY-MM-DD" data-item-id="vax-unique-id">
+          <td>Vaccine Name</td>
+          <td class="col-tick"><label class="tick"><input type="checkbox" onchange="toggleDone(this)" aria-label="Mark as done"><span class="tick-box"></span></label></td>
+          <td class="col-date">DD Mon YYYY</td>
+        </tr>
+        -->
+      </tbody>
+    </table>
+  </div>
+ 
+  <!-- ③ DEWORMING SCHEDULE — auto-replaced from pet-schedules.js, same as
+       the Vaccination table above. Edit the fixed dates there. -->
+  <div class="sec">
+    <div class="sec-title"><span class="icon">🐛</span> Deworming Schedule</div>
+    <table class="sched-table">
+      <thead>
+        <tr>
+          <th>Treatment</th>
+          <th class="col-tick">Done</th>
+          <th class="col-date">Date</th>
+        </tr>
+      </thead>
+      <tbody id="dewTbody">
+        <tr data-remind-type="deworming" data-due="2026-07-21" data-item-id="dew-1st">
+          <td>1st Deworming</td>
+          <td class="col-tick"><label class="tick"><input type="checkbox" onchange="toggleDone(this)" aria-label="Mark as done"><span class="tick-box"></span></label></td>
+          <td class="col-date">21 Jul 2026</td>
+        </tr>
+        <tr data-remind-type="deworming" data-due="2026-07-21" data-item-id="dew-2nd">
+          <td>2nd Deworming</td>
+          <td class="col-tick"><label class="tick"><input type="checkbox" onchange="toggleDone(this)" aria-label="Mark as done"><span class="tick-box"></span></label></td>
+          <td class="col-date">21 Jul 2026</td>
+        </tr>
+        <tr data-remind-type="deworming" data-due="2026-07-21" data-item-id="dew-quarterly">
+          <td>Quarterly Deworming</td>
+          <td class="col-tick"><label class="tick"><input type="checkbox" onchange="toggleDone(this)" aria-label="Mark as done"><span class="tick-box"></span></label></td>
+          <td class="col-date">21 Jul 2026</td>
+        </tr>
+        <!-- Add more rows — set data-due to the YYYY-MM-DD version of the date shown,
+             and give each a unique data-item-id:
+        <tr data-remind-type="deworming" data-due="YYYY-MM-DD" data-item-id="dew-unique-id">
+          <td>Treatment Name</td>
+          <td class="col-tick"><label class="tick"><input type="checkbox" onchange="toggleDone(this)" aria-label="Mark as done"><span class="tick-box"></span></label></td>
+          <td class="col-date">DD Mon YYYY</td>
+        </tr>
+        -->
+      </tbody>
+    </table>
+  </div>
+ 
+  <!-- ④ DOCUMENT LOCKER — owner can safely store this pet's documents
+       (vaccine certificates, medical records, adoption papers, etc.)
+       Files are saved as data URLs in the browser's localStorage under
+       key `pawhouse_docs_<PET_ID>` — same pattern as the gallery photos
+       below. Rendered/handled by petbox.js. -->
+  <div class="sec">
+    <div class="sec-title"><span class="icon">🔒</span> Document Locker</div>
+    <div class="locker-list" id="lockerList"></div>
+    <div class="locker-empty" id="lockerEmpty" style="display:none;">No documents added yet 🔒 — vaccine certificates, medical records, and other files will appear here.</div>
+    <div class="locker-upload-tile" id="lockerUploadTile" onclick="handleLockerTileClick()">
+      <span>📎</span><span id="lockerUploadLabel">Add a Document</span>
+    </div>
+    <input type="file" id="lockerFileInput" accept=".pdf,.jpg,.jpeg,.png,.webp" style="display:none" onchange="handleLockerUpload(event)">
+    <div class="locker-note" id="lockerNote">PDF or image, up to 5MB — stored securely for this pet only.</div>
+  </div>
+ 
+  <!-- ⑤ BODY CONDITION SCORE (BCS) — monthly 5-question check-in -->
+  <div class="sec">
+    <div class="sec-title"><span class="icon">📏</span> Monthly Body Condition Score</div>
+    <div class="bcs-intro">Answer these 5 quick questions once a month to check Casper's body condition using the vet-standard 9-point BCS scale — the same simple checks a vet uses at a routine exam.</div>
+
+    <!-- Quiz (shown when a new monthly check-in is available) -->
+    <div id="bcsQuizWrap">
+      <div class="bcs-q" data-q="1">
+        <div class="bcs-q-text">1. Can you easily feel the ribs without pressing hard?</div>
+        <div class="bcs-opts">
+          <button class="bcs-opt" data-score="4.5" onclick="selectBcsOpt(this)">Yes, very easily — little fat covering</button>
+          <button class="bcs-opt" data-score="2" onclick="selectBcsOpt(this)">Ribs are very prominent</button>
+          <button class="bcs-opt" data-score="7.5" onclick="selectBcsOpt(this)">Need to press firmly to feel them</button>
+        </div>
+      </div>
+      <div class="bcs-q" data-q="2">
+        <div class="bcs-q-text">2. Looking from above, is there a visible waist behind the ribs?</div>
+        <div class="bcs-opts">
+          <button class="bcs-opt" data-score="4.5" onclick="selectBcsOpt(this)">Yes, a well-defined waist</button>
+          <button class="bcs-opt" data-score="2" onclick="selectBcsOpt(this)">Very narrow, bones visible</button>
+          <button class="bcs-opt" data-score="7.5" onclick="selectBcsOpt(this)">Waist absent or barely visible</button>
+        </div>
+      </div>
+      <div class="bcs-q" data-q="3">
+        <div class="bcs-q-text">3. Looking from the side, is there an abdominal tuck (belly tucked upward)?</div>
+        <div class="bcs-opts">
+          <button class="bcs-opt" data-score="4.5" onclick="selectBcsOpt(this)">Moderate abdominal tuck</button>
+          <button class="bcs-opt" data-score="2" onclick="selectBcsOpt(this)">Extreme tuck</button>
+          <button class="bcs-opt" data-score="7.5" onclick="selectBcsOpt(this)">Little or no tuck — hanging belly</button>
+        </div>
+      </div>
+      <div class="bcs-q" data-q="4">
+        <div class="bcs-q-text">4. Are the spine, hips, and pelvic bones visible or easily felt?</div>
+        <div class="bcs-opts">
+          <button class="bcs-opt" data-score="1.5" onclick="selectBcsOpt(this)">Visible and prominent</button>
+          <button class="bcs-opt" data-score="4.5" onclick="selectBcsOpt(this)">Can be felt but not seen</button>
+          <button class="bcs-opt" data-score="8" onclick="selectBcsOpt(this)">Difficult or impossible to feel</button>
+        </div>
+      </div>
+      <div class="bcs-q" data-q="5">
+        <div class="bcs-q-text">5. Is there obvious fat build-up over the neck, chest, base of the tail, or belly?</div>
+        <div class="bcs-opts">
+          <button class="bcs-opt" data-score="4.5" onclick="selectBcsOpt(this)">No excess fat</button>
+          <button class="bcs-opt" data-score="6.5" onclick="selectBcsOpt(this)">Moderate fat deposits</button>
+          <button class="bcs-opt" data-score="8.5" onclick="selectBcsOpt(this)">Heavy fat deposits / abdominal fat pad</button>
+        </div>
+      </div>
+      <button class="bcs-submit" id="bcsSubmitBtn" onclick="submitBcs()" disabled>Answer all 5 to see this month's result</button>
+    </div>
+
+    <!-- Result / locked state — filled in by JS -->
+    <div id="bcsResultWrap" style="display:none;"></div>
+
+    <details class="bcs-table-toggle">
+      <summary>Full 9-point BCS reference table</summary>
+      <table class="bcs-mini-table" id="bcsRefTable">
+        <thead><tr><th>BCS</th><th>Condition</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr data-bcs="1"><td>1</td><td>Emaciated</td><td>Bones clearly visible, no body fat</td></tr>
+          <tr data-bcs="2"><td>2</td><td>Very Thin</td><td>Minimal fat, severe muscle loss</td></tr>
+          <tr data-bcs="3"><td>3</td><td>Thin</td><td>Ribs obvious, slight fat cover</td></tr>
+          <tr data-bcs="4"><td>4</td><td>Lean</td><td>Ribs easily felt, visible waist</td></tr>
+          <tr data-bcs="5"><td>5</td><td>Ideal</td><td>Ribs palpable, waist & abdominal tuck present</td></tr>
+          <tr data-bcs="6"><td>6</td><td>Slightly Overweight</td><td>Slight fat over ribs, waist less obvious</td></tr>
+          <tr data-bcs="7"><td>7</td><td>Overweight</td><td>Difficult to feel ribs, no clear waist</td></tr>
+          <tr data-bcs="8"><td>8</td><td>Obese</td><td>Heavy fat deposits, abdominal distension</td></tr>
+          <tr data-bcs="9"><td>9</td><td>Grossly Obese</td><td>Massive fat deposits, no waist, marked fat</td></tr>
+        </tbody>
+      </table>
+    </details>
+
+    <div id="bcsHistoryWrap"></div>
+  </div>
+
+  <!-- ⑥ AUDIO CALL — coming soon -->
+  <div class="sec">
+    <div class="sec-title">
+      <span class="icon">📞</span> Audio Call with Us
+      <span class="badge-soon">Coming Soon</span>
+    </div>
+    <div class="coming-soon-wrap">
+      <div class="cs-icon">🎙️</div>
+      <div class="cs-title">Talk to our pet care team</div>
+      <div class="cs-sub">Book a live audio call with our vets and caretakers — directly from your pet's box. We're working on it!</div>
+      <div class="cs-pill">🚀 Launching Soon</div>
+    </div>
+  </div>
+ 
+  <!-- ⑦ GALLERY — add <img> tags for each photo -->
+  <div class="sec">
+    <div class="sec-title"><span class="icon">📸</span> Memories & Gallery</div>
+    <div class="gallery-grid" id="galleryGrid">
+      <img src="casper.jpg" alt="Casper memory" onclick="openLightbox(this.src)">
+      <!-- Add more photos here:
+      <img src="photo2.jpg" alt="..." onclick="openLightbox(this.src)">
+      <img src="photo3.jpg" alt="..." onclick="openLightbox(this.src)">
+      -->
+
+      <!-- Owner upload tile — always rendered last, state toggled by JS -->
+      <div class="upload-tile" id="uploadTile" onclick="handleUploadTileClick()">
+        <div class="up-icon">📷</div>
+        <div class="up-label" id="uploadLabel">Add a Memory</div>
+        <div class="up-sub" id="uploadSub">1 photo every 15 days</div>
+      </div>
+      <input type="file" id="galleryFileInput" accept="image/*" style="display:none" onchange="handleGalleryUpload(event)">
+    </div>
+    <div class="gallery-note" id="galleryNote"></div>
+    <!-- If no photos yet, use this instead:
+    <div class="gallery-empty">No memories added yet 🐾 — photos will appear here soon.</div>
+    -->
+  </div>
+ 
+</div><!-- /page -->
+ 
+<footer class="footer">
+  <p>© <span id="year"></span> Vet Paw House. All rights reserved.</p>
+  <p class="footer-links"><a href="terms.html">Terms &amp; Conditions</a> · <a href="privacy.html">Privacy Policy</a> · <a href="home.html">Home</a></p>
+</footer>
+ 
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<!-- GALLERY UPLOAD TOAST -->
+<div class="gallery-toast" id="galleryToast"></div>
+
+<script>window.PET_ID = 'casper';</script>
+<script src="pet-schedules.js"></script>
+<script src="petbox.js"></script>
+<script type="module" src="js/firebase.js"></script>
+<script type="module" src="js/petbox-sync.js"></script>
+
+<!-- ===== PET ID CARD — QR generation + downloads =====
+     qrcode.js draws the QR into #idQrCode; html2canvas turns the ID card
+     (or just the QR box) into a PNG the visitor can save. Both are loaded
+     from a CDN since this page is opened as a plain file, not published
+     as a sandboxed artifact. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  (function () {
+    // Auto-fill the ID card's short code from window.PET_ID (set above),
+    // so it stays correct without a separate manual edit.
+    const codeEl = document.getElementById('idCardCode');
+    if (codeEl && window.PET_ID) {
+      codeEl.textContent = 'PH-' + String(window.PET_ID).toUpperCase();
+    }
+
+    // The QR always encodes this page's own URL — scanning it (e.g. from
+    // a printed tag on the pet's collar) opens this exact profile page.
+    const qrTarget = document.getElementById('idQrCode');
+    if (qrTarget && window.QRCode) {
+      new QRCode(qrTarget, {
+        text: window.location.href,
+        width: 100,
+        height: 100,
+        colorDark: '#1b1108',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    }
+  })();
+
+  // Downloads a real ID card: FRONT (photo, pet name, owner name, owner contact)
+  // and BACK (QR code + pet details), stacked in one PNG. The card is built
+  // off-screen from the live values already on the page, so whatever the
+  // registration / Firebase sync fills in is what ends up on the card.
+  function downloadIdCard() {
+    if (!window.html2canvas || !window.QRCode) return;
+
+    const $   = id => document.getElementById(id);
+    const txt = id => ($(id) ? $(id).textContent.trim() : '');
+    const el  = (tag, cls, text) => {
+      const n = document.createElement(tag);
+      if (cls) n.className = cls;
+      if (text !== undefined) n.textContent = text;
+      return n;
+    };
+    const field = (label, value, valueCls) => {
+      const f = el('div');
+      f.appendChild(el('div', 'idx-label', label));
+      f.appendChild(el('div', valueCls || 'idx-value', value || '—'));
+      return f;
+    };
+    const head = tag => {
+      const h = el('div', 'idx-head');
+      h.appendChild(el('div', 'idx-brand', '🐾 Vet Paw House'));
+      h.appendChild(el('div', 'idx-tag', tag));
+      return h;
+    };
+
+    const petId   = (window.PET_ID || 'pet').toLowerCase();
+    const photoEl = $('idCardPhoto');
+    const d = {
+      name: txt('idCardName'),           breed: txt('idCardBreed'),
+      sex: txt('idCardSex'),             age: txt('idCardAge'),
+      weight: txt('idCardWeight'),       since: txt('idCardSince'),
+      ownerName: txt('idCardOwnerName'), ownerContact: txt('idCardOwnerContact'),
+      code: txt('idCardCode'),
+      photo: photoEl ? (photoEl.currentSrc || photoEl.src) : ''
+    };
+
+    const sheet = el('div', 'idx-sheet');
+
+    // ---------- FRONT ----------
+    const front = el('div', 'idx-card');
+    front.appendChild(head('Pet ID Card'));
+    const fBody = el('div', 'idx-body');
+    const photo = el('div', 'idx-photo');
+    if (d.photo) photo.style.backgroundImage = 'url("' + d.photo.replace(/"/g, '%22') + '")';
+    fBody.appendChild(photo);
+    const fInfo = el('div', 'idx-front-info');
+    fInfo.appendChild(field('Pet Name', d.name, 'idx-name' + (d.name.length > 12 ? ' long' : '')));
+    fInfo.appendChild(field('Owner Name', d.ownerName));
+    fInfo.appendChild(field('Owner Contact', d.ownerContact));
+    fBody.appendChild(fInfo);
+    front.appendChild(fBody);
+    const fFoot = el('div', 'idx-foot');
+    fFoot.appendChild(el('div', 'idx-code', d.code));
+    front.appendChild(fFoot);
+
+    // ---------- BACK ----------
+    const back = el('div', 'idx-card');
+    back.appendChild(head('Pet Details'));
+    const bBody = el('div', 'idx-body');
+    const qrCol = el('div', 'idx-qr-col');
+    const qrBox = el('div', 'idx-qr-box');
+    qrCol.appendChild(qrBox);
+    qrCol.appendChild(el('div', 'idx-qr-cap', 'Scan for pet profile'));
+    bBody.appendChild(qrCol);
+    const grid = el('div', 'idx-grid');
+    [['Breed', d.breed], ['Sex', d.sex], ['Age', d.age],
+     ['Weight', d.weight], ['Member Since', d.since], ['Pet ID', d.code]]
+      .forEach(([l, v]) => grid.appendChild(field(l, v)));
+    bBody.appendChild(grid);
+    back.appendChild(bBody);
+    const bFoot = el('div', 'idx-foot');
+    bFoot.appendChild(el('div', 'idx-foot-note', 'If found, please scan the QR code to view the pet profile and contact the owner.'));
+    back.appendChild(bFoot);
+
+    sheet.appendChild(front);
+    sheet.appendChild(back);
+    document.body.appendChild(sheet);
+
+    new QRCode(qrBox, {
+      text: window.location.href,
+      width: 232, height: 232,
+      colorDark: '#1b1108', colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+
+    // wait until the QR image, the photo and the web fonts are ready
+    const qrReady = new Promise(resolve => {
+      let tries = 0;
+      (function check() {
+        const img = qrBox.querySelector('img');
+        if ((img && img.src && img.src.indexOf('data:') === 0) || ++tries > 20) return resolve();
+        setTimeout(check, 50);
+      })();
+    });
+    const photoReady = new Promise(resolve => {
+      if (!d.photo) return resolve();
+      const im = new Image();
+      im.crossOrigin = 'anonymous';
+      im.onload = im.onerror = () => resolve();
+      im.src = d.photo;
+    });
+    const fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+
+    Promise.all([qrReady, photoReady, fontsReady])
+      .then(() => html2canvas(sheet, { backgroundColor: '#0d0f14', scale: 2, useCORS: true }))
+      .then(canvas => {
+        const link = document.createElement('a');
+        link.download = `${petId}-id-card.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      })
+      .catch(err => {
+        console.error('ID card download failed:', err);
+        alert('Could not create the ID card. Please try again.');
+      })
+      .then(() => sheet.remove());
+  }
+
+  function downloadQrOnly() {
+    const qrBox = document.getElementById('idQrCode');
+    if (!qrBox || !window.html2canvas) return;
+    const petId = (window.PET_ID || 'pet').toLowerCase();
+    html2canvas(qrBox, { backgroundColor: '#ffffff', scale: 3 }).then(canvas => {
+      const link = document.createElement('a');
+      link.download = `${petId}-qr-code.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }).catch(err => console.error('QR download failed:', err));
+  }
+</script>
+</body>
+</html>

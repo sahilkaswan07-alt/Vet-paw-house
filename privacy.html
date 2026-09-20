@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — Vet Paw House</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="theme.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      color-scheme: light;
+      --bg: #f6f1e7; --card: #ffffff; --accent: #ad590b; --text: #1b1a22; --muted: #5b5b6b;
+      --line: rgba(173,89,11,0.22); --soft: rgba(244,162,77,0.14); --mark: #fff0a8;
+      --grad: linear-gradient(135deg, #c96a0c, #b8404a, #8f3a9c);
+      --nav-bg: rgba(246,241,231,0.9); --shadow: 0 2px 30px rgba(80,55,20,0.10);
+    }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #0d0f14; --card: #13151c; --accent: #f4a24d; --text: #e8e2d5; --muted: #9a9aad;
+      --line: rgba(244,162,77,0.2); --soft: rgba(244,162,77,0.1); --mark: rgba(244,162,77,0.28);
+      --grad: linear-gradient(135deg, #f4a24d, #e07b7b, #c96fd0);
+      --nav-bg: rgba(13,15,20,0.85); --shadow: 0 2px 30px rgba(0,0,0,0.4);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.7;
+      -webkit-text-size-adjust: 100%;
+    }
+    a { color: var(--accent); }
+
+    /* top bar */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      padding: .9rem 2rem; background: var(--nav-bg); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.2rem;
+      text-decoration: none; white-space: nowrap;
+      background-image: var(--grad); -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+    }
+    .nav-links { display: flex; align-items: center; gap: 1.4rem; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: .85rem; font-weight: 600; letter-spacing: .03em; }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-links .nav-cta {
+      color: var(--accent); background: var(--soft); border: 1px solid var(--line);
+      padding: .42rem 1rem; border-radius: 40px;
+    }
+
+    /* page */
+    .doc { max-width: 860px; margin: 0 auto; padding: 6rem 1.2rem 3rem; }
+    .doc-head { text-align: center; margin-bottom: 1.8rem; }
+    .doc-head h1 {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: clamp(1.9rem, 6vw, 2.7rem); line-height: 1.15; margin-bottom: .5rem;
+      background-image: var(--grad); -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+    }
+    .updated { color: var(--muted); font-size: .85rem; }
+    .paper {
+      background: var(--card); border: 1px solid var(--line); border-radius: 22px;
+      padding: 2.2rem 2.4rem; box-shadow: var(--shadow);
+    }
+    .glance {
+      background: var(--soft); border: 1px solid var(--line); border-radius: 16px;
+      padding: 1.1rem 1.3rem; margin-bottom: 1.6rem;
+    }
+    .glance strong { display: block; margin-bottom: .4rem; color: var(--accent); }
+    .glance ul { margin-left: 1.2rem; }
+    .glance li { margin: .25rem 0; }
+
+    .toc { border: 1px solid var(--line); border-radius: 16px; padding: 1rem 1.3rem; margin-bottom: 2rem; }
+    .toc strong { display: block; margin-bottom: .4rem; }
+    .toc ol { columns: 2; column-gap: 2rem; padding-left: 1.3rem; font-size: .92rem; }
+    .toc li { margin: .15rem 0; break-inside: avoid; }
+    .toc a { text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+
+    section { scroll-margin-top: 5rem; }
+    section + section { margin-top: 2rem; }
+    h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; line-height: 1.3; margin: 0 0 .7rem; scroll-margin-top: 5rem; }
+    p { margin: .7rem 0; }
+    ul { margin: .6rem 0 .6rem 1.3rem; }
+    li { margin: .4rem 0; }
+    .note {
+      border-left: 4px solid var(--accent); background: var(--soft);
+      padding: .8rem 1.1rem; border-radius: 0 12px 12px 0; margin: 1rem 0;
+    }
+    mark.fill { background: var(--mark); color: inherit; padding: .05em .35em; border-radius: 5px; font-weight: 600; }
+
+    footer { text-align: center; color: var(--muted); font-size: .85rem; padding: 1rem 1.2rem 4.5rem; }
+    footer a { color: var(--muted); margin: 0 .5rem; }
+    footer a:hover { color: var(--accent); }
+
+    @media (max-width: 700px) {
+      .navbar { padding: .75rem 1rem; }
+      .nav-logo { font-size: 1.02rem; }
+      .nav-links { gap: .7rem; }
+      .nav-links a { font-size: .75rem; }
+      .nav-links .nav-cta { padding: .36rem .8rem; }
+      .doc { padding-top: 5rem; }
+      .paper { padding: 1.4rem 1.15rem; border-radius: 18px; }
+      .toc ol { columns: 1; }
+      h2 { font-size: 1.15rem; }
+    }
+    @media (max-width: 360px) { .nav-logo { font-size: .9rem; } .hide-sm { display: none; } }
+    @media print {
+      .navbar, .theme-toggle { display: none !important; }
+      body { background: #fff; color: #000; }
+      .paper { box-shadow: none; border: none; padding: 0; }
+      .doc { padding-top: 1rem; }
+      a { color: inherit; }
+    }
+  </style>
+</head>
+<body>
+  <!-- BEFORE YOU PUBLISH: search this file for the yellow [square-bracket] placeholders
+       (support email, registered business name/address, city for court jurisdiction) and
+       replace them with your real details. Have a lawyer look over the final text. -->
+
+  <header class="navbar">
+    <a class="nav-logo" href="index.html">🐾 Vet Paw House</a>
+    <nav class="nav-links">
+      <a href="terms.html">Terms<span class="hide-sm"> &amp; Conditions</span></a>
+      <a class="nav-cta" href="index.html">Home</a>
+    </nav>
+  </header>
+
+  <main class="doc">
+    <div class="doc-head">
+      <h1>Privacy Policy</h1>
+      <p class="updated">Last updated: 20 September 2026</p>
+    </div>
+
+    <div class="paper">
+      <div class="glance">
+        <strong>The short version</strong>
+        <ul>
+          <li>We collect your contact details, your pet’s details and payment references so we can run your plan and send reminders.</li>
+          <li>We do not sell your personal information.</li>
+          <li>Gallery photos and locker documents are kept in your own browser, not sent to us.</li>
+          <li>Your pet’s QR code opens a page that anyone who scans it can see, including the owner’s name and phone number on the ID card.</li>
+        </ul>
+        <p style="margin-top:.6rem;font-size:.9rem;">This summary is only a guide. The full text below is what applies.</p>
+      </div>
+
+      <nav class="toc" aria-label="Contents">
+        <strong>Contents</strong>
+        <ol>
+          <li><a href="#s1">Who we are and what this covers</a></li>
+          <li><a href="#s2">Information we collect</a></li>
+          <li><a href="#s3">How we use your information</a></li>
+          <li><a href="#s4">Where your information is kept</a></li>
+          <li><a href="#s5">Who we share your information with</a></li>
+          <li><a href="#s6">Your pet’s page and QR code</a></li>
+          <li><a href="#s7">Browser storage, cookies and third-party content</a></li>
+          <li><a href="#s8">How long we keep your information</a></li>
+          <li><a href="#s9">Keeping your information safe</a></li>
+          <li><a href="#s10">Your rights and choices</a></li>
+          <li><a href="#s11">Children</a></li>
+          <li><a href="#s12">Changes to this Policy</a></li>
+          <li><a href="#s13">Contact us and complaints</a></li>
+        </ol>
+      </nav>
+
+      <section id="s1">
+        <h2>1. Who we are and what this covers</h2>
+
+        <p>This Privacy Policy explains what personal information Vet Paw House (“we”, “us”, “our”) collects, why we collect it, how we use and protect it, and the choices you have. It applies to our website and services, including registration, your pet’s page, reminders, the pet ID card and QR code, and payments. Please read it together with our <a href="terms.html">Terms &amp; Conditions</a>.</p>
+        <p>We handle personal data in line with Indian law, including the Information Technology Act, 2000 and the Digital Personal Data Protection Act, 2023, as they apply to us. By registering or using the Service, you agree to this Policy and consent to the handling of your personal data as described here.</p>
+      </section>
+      <section id="s2">
+        <h2>2. Information we collect</h2>
+
+        <ul>
+          <li><strong>Your details:</strong> your name, mobile number (used for WhatsApp and calls) and email address.</li>
+          <li><strong>Your pet’s details:</strong> name, type, breed, sex, age, weight and photo.</li>
+          <li><strong>Plan and payment details:</strong> the plan and add-on you choose, the amount, and the UPI transaction reference (UTR) you enter. You pay inside your own UPI app, so we do not receive your UPI PIN, card details or bank password.</li>
+          <li><strong>Pet-care information:</strong> vaccination and deworming dates, items you tick as done, and your body condition score (BCS) check-ins.</li>
+          <li><strong>Content you add:</strong> memory gallery photos and locker documents. These can contain personal details such as your name, address or your pet’s medical records.</li>
+          <li><strong>Messages:</strong> anything you send us when you contact us for help.</li>
+          <li><strong>Technical information:</strong> basic details such as browser type, device type and IP address, which our hosting and cloud providers normally log, plus the small items your browser stores for the site (see Section 7).</li>
+        </ul>
+      </section>
+      <section id="s3">
+        <h2>3. How we use your information</h2>
+
+        <ul>
+          <li>to register you and your pet, and to create and run your pet’s page, ID card and QR code;</li>
+          <li>to check your payment and activate, renew or end your plan;</li>
+          <li>to send vaccination and deworming reminders, payment and activation updates, renewal notices and important service messages by WhatsApp, SMS, call or email;</li>
+          <li>to give you support and answer your questions;</li>
+          <li>to keep accounting and other records the law requires;</li>
+          <li>to keep the Service secure, prevent fraud and misuse, and fix problems; and</li>
+          <li>to improve the Service.</li>
+        </ul>
+        <p>We use your personal data only for these purposes, which are connected to running the Service you asked for, or where the law allows or requires.</p>
+      </section>
+      <section id="s4">
+        <h2>4. Where your information is kept</h2>
+
+        <ul>
+          <li><strong>On our cloud systems:</strong> your registration details, plan and payment details, and the reminder details we need to contact you are kept in our cloud database and hosting, provided by Google Firebase.</li>
+          <li><strong>In your own browser:</strong> memory gallery photos, locker documents, the items you tick as done, body condition check-ins and preferences such as light or dark mode are kept in your browser’s local storage on your device. As the Service works today, we do not automatically receive a copy.</li>
+        </ul>
+        <div class="note"><strong>Please note:</strong> browser storage belongs to one browser on one device. Clearing your browsing data, switching browser or phone, or losing your device can delete this content, and we may not be able to recover it. Please keep your own copies of anything important, and do not put identity documents (such as Aadhaar or PAN) or bank details in the locker.</div>
+      </section>
+      <section id="s5">
+        <h2>5. Who we share your information with</h2>
+
+        <p>We do not sell your personal information. We share it only as follows:</p>
+        <ul>
+          <li><strong>Service providers</strong> who help us run the Service and act on our instructions: cloud hosting and database (Google Firebase), and email and messaging providers, including WhatsApp, used to send your reminders. They receive only what they need, such as your phone number or email.</li>
+          <li><strong>Payment apps and banks.</strong> Your UPI app and bank handle your payment under their own privacy policies.</li>
+          <li><strong>The public,</strong> through your pet’s QR code and page (see Section 6).</li>
+          <li><strong>Authorities and advisers,</strong> where the law requires it, to protect our rights or the safety of others, or to our professional advisers.</li>
+          <li><strong>A new owner of the business,</strong> if Vet Paw House is ever sold or merged, who must protect your data in the same way.</li>
+        </ul>
+      </section>
+      <section id="s6">
+        <h2>6. Your pet’s page and QR code</h2>
+
+        <div class="note"><strong>Public by design:</strong> your pet’s QR code opens your pet’s page.</div>
+        <p>Anyone who scans the QR code or has the link can see what that page shows, which can include your pet’s details and the owner name and contact number on the ID card. This is meant to help a lost pet get home. Share the QR code and link only where you are comfortable with that, and contact us if you want any detail changed or removed.</p>
+      </section>
+      <section id="s7">
+        <h2>7. Browser storage, cookies and third-party content</h2>
+
+        <p>We use your browser’s local storage only for things the site needs to work, such as remembering ticks, your gallery and documents, whether you have seen a reminder today, and your light or dark mode choice. We do not use advertising or tracking cookies.</p>
+        <p>Our pages load fonts from Google Fonts and code libraries from Cloudflare’s cdnjs. When your browser loads them, those providers can see your IP address and browser details. You can clear browser storage at any time in your browser’s settings.</p>
+      </section>
+      <section id="s8">
+        <h2>8. How long we keep your information</h2>
+
+        <ul>
+          <li>We keep your registration and plan details while your registration is active and for a reasonable time afterwards, for example to handle support questions or disputes.</li>
+          <li>We keep payment and accounting records for as long as the law requires.</li>
+          <li>When we no longer need personal data, and the law does not require us to keep it, we delete it or make it anonymous.</li>
+          <li>Content stored in your browser stays there until you delete it or clear your browser data.</li>
+        </ul>
+      </section>
+      <section id="s9">
+        <h2>9. Keeping your information safe</h2>
+
+        <p>We use reasonable safeguards, including trusted cloud providers and limiting who can see your information. No website or system is completely secure, so we cannot promise absolute security.</p>
+        <p>You can help by keeping your box password private, not sharing your pet’s QR code and link carelessly, using devices you trust, and not uploading sensitive personal documents to the locker. If you think your information has been misused, contact us straight away.</p>
+      </section>
+      <section id="s10">
+        <h2>10. Your rights and choices</h2>
+
+        <p>Under Indian law you can ask us to:</p>
+        <ul>
+          <li>tell you what personal data of yours we hold and how we use it;</li>
+          <li>correct or update data that is wrong or incomplete;</li>
+          <li>erase your data, unless we must keep it by law (for example payment records);</li>
+          <li>stop non-essential messages, or withdraw your consent to how we use your data. This may mean some features can no longer work; and</li>
+          <li>deal with a complaint about how we have handled your data.</li>
+        </ul>
+        <p>To use any of these rights, contact us using the details in Section 13, from the mobile number or email you registered with. We will reply within a reasonable time, and in any case within the time the law requires. If you are not satisfied with our answer, you may approach the Data Protection Board of India as provided in the Digital Personal Data Protection Act, 2023.</p>
+      </section>
+      <section id="s11">
+        <h2>11. Children</h2>
+
+        <p>The Service is meant for adults who own pets. We do not knowingly collect personal data from anyone under 18 without a parent or guardian’s consent. If you believe a child has given us personal data, contact us and we will delete it.</p>
+      </section>
+      <section id="s12">
+        <h2>12. Changes to this Policy</h2>
+
+        <p>We may update this Policy from time to time. We will post the new version on this page with a new “Last updated” date, and tell you about important changes on the website or by message. If you keep using the Service after a change, you accept the updated Policy.</p>
+      </section>
+      <section id="s13">
+        <h2>13. Contact us and complaints</h2>
+
+        <p>For any question, request or complaint about your privacy, please contact:</p>
+        <p><strong>Vet Paw House</strong><br>
+<mark class="fill">[registered business name and address]</mark><br>
+Phone / WhatsApp: <a href="tel:+917300479727">+91 73004 79727</a><br>
+Email: <mark class="fill">[your support email]</mark></p>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <p>© <span id="year"></span> Vet Paw House. All rights reserved.</p>
+    <p><a href="terms.html">Terms &amp; Conditions</a> · <a href="privacy.html">Privacy Policy</a> · <a href="index.html">Home</a></p>
+  </footer>
+
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

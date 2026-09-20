@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms & Conditions — Vet Paw House</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="theme.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      color-scheme: light;
+      --bg: #f6f1e7; --card: #ffffff; --accent: #ad590b; --text: #1b1a22; --muted: #5b5b6b;
+      --line: rgba(173,89,11,0.22); --soft: rgba(244,162,77,0.14); --mark: #fff0a8;
+      --grad: linear-gradient(135deg, #c96a0c, #b8404a, #8f3a9c);
+      --nav-bg: rgba(246,241,231,0.9); --shadow: 0 2px 30px rgba(80,55,20,0.10);
+    }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #0d0f14; --card: #13151c; --accent: #f4a24d; --text: #e8e2d5; --muted: #9a9aad;
+      --line: rgba(244,162,77,0.2); --soft: rgba(244,162,77,0.1); --mark: rgba(244,162,77,0.28);
+      --grad: linear-gradient(135deg, #f4a24d, #e07b7b, #c96fd0);
+      --nav-bg: rgba(13,15,20,0.85); --shadow: 0 2px 30px rgba(0,0,0,0.4);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.7;
+      -webkit-text-size-adjust: 100%;
+    }
+    a { color: var(--accent); }
+
+    /* top bar */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      padding: .9rem 2rem; background: var(--nav-bg); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.2rem;
+      text-decoration: none; white-space: nowrap;
+      background-image: var(--grad); -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+    }
+    .nav-links { display: flex; align-items: center; gap: 1.4rem; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: .85rem; font-weight: 600; letter-spacing: .03em; }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-links .nav-cta {
+      color: var(--accent); background: var(--soft); border: 1px solid var(--line);
+      padding: .42rem 1rem; border-radius: 40px;
+    }
+
+    /* page */
+    .doc { max-width: 860px; margin: 0 auto; padding: 6rem 1.2rem 3rem; }
+    .doc-head { text-align: center; margin-bottom: 1.8rem; }
+    .doc-head h1 {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: clamp(1.9rem, 6vw, 2.7rem); line-height: 1.15; margin-bottom: .5rem;
+      background-image: var(--grad); -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+    }
+    .updated { color: var(--muted); font-size: .85rem; }
+    .paper {
+      background: var(--card); border: 1px solid var(--line); border-radius: 22px;
+      padding: 2.2rem 2.4rem; box-shadow: var(--shadow);
+    }
+    .glance {
+      background: var(--soft); border: 1px solid var(--line); border-radius: 16px;
+      padding: 1.1rem 1.3rem; margin-bottom: 1.6rem;
+    }
+    .glance strong { display: block; margin-bottom: .4rem; color: var(--accent); }
+    .glance ul { margin-left: 1.2rem; }
+    .glance li { margin: .25rem 0; }
+
+    .toc { border: 1px solid var(--line); border-radius: 16px; padding: 1rem 1.3rem; margin-bottom: 2rem; }
+    .toc strong { display: block; margin-bottom: .4rem; }
+    .toc ol { columns: 2; column-gap: 2rem; padding-left: 1.3rem; font-size: .92rem; }
+    .toc li { margin: .15rem 0; break-inside: avoid; }
+    .toc a { text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+
+    section { scroll-margin-top: 5rem; }
+    section + section { margin-top: 2rem; }
+    h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; line-height: 1.3; margin: 0 0 .7rem; scroll-margin-top: 5rem; }
+    p { margin: .7rem 0; }
+    ul { margin: .6rem 0 .6rem 1.3rem; }
+    li { margin: .4rem 0; }
+    .note {
+      border-left: 4px solid var(--accent); background: var(--soft);
+      padding: .8rem 1.1rem; border-radius: 0 12px 12px 0; margin: 1rem 0;
+    }
+    mark.fill { background: var(--mark); color: inherit; padding: .05em .35em; border-radius: 5px; font-weight: 600; }
+
+    footer { text-align: center; color: var(--muted); font-size: .85rem; padding: 1rem 1.2rem 4.5rem; }
+    footer a { color: var(--muted); margin: 0 .5rem; }
+    footer a:hover { color: var(--accent); }
+
+    @media (max-width: 700px) {
+      .navbar { padding: .75rem 1rem; }
+      .nav-logo { font-size: 1.02rem; }
+      .nav-links { gap: .7rem; }
+      .nav-links a { font-size: .75rem; }
+      .nav-links .nav-cta { padding: .36rem .8rem; }
+      .doc { padding-top: 5rem; }
+      .paper { padding: 1.4rem 1.15rem; border-radius: 18px; }
+      .toc ol { columns: 1; }
+      h2 { font-size: 1.15rem; }
+    }
+    @media (max-width: 360px) { .nav-logo { font-size: .9rem; } .hide-sm { display: none; } }
+    @media print {
+      .navbar, .theme-toggle { display: none !important; }
+      body { background: #fff; color: #000; }
+      .paper { box-shadow: none; border: none; padding: 0; }
+      .doc { padding-top: 1rem; }
+      a { color: inherit; }
+    }
+  </style>
+</head>
+<body>
+  <!-- BEFORE YOU PUBLISH: search this file for the yellow [square-bracket] placeholders
+       (support email, registered business name/address, city for court jurisdiction) and
+       replace them with your real details. Have a lawyer look over the final text. -->
+
+  <header class="navbar">
+    <a class="nav-logo" href="index.html">🐾 Vet Paw House</a>
+    <nav class="nav-links">
+      <a href="privacy.html">Privacy<span class="hide-sm"> Policy</span></a>
+      <a class="nav-cta" href="index.html">Home</a>
+    </nav>
+  </header>
+
+  <main class="doc">
+    <div class="doc-head">
+      <h1>Terms &amp; Conditions</h1>
+      <p class="updated">Last updated: 20 September 2026</p>
+    </div>
+
+    <div class="paper">
+      <div class="glance">
+        <strong>The short version</strong>
+        <ul>
+          <li>Vet Paw House is a pet record and reminder service, not a vet. Always follow your veterinarian's advice.</li>
+          <li>Plans are paid by UPI and switched on after we check your payment.</li>
+          <li>Fees are generally not refundable once a plan is active, apart from the cases in Section 5.</li>
+          <li>Reminders can be late and content kept in your browser can be lost, so keep your own copies.</li>
+        </ul>
+        <p style="margin-top:.6rem;font-size:.9rem;">This summary is only a guide. The full text below is what applies.</p>
+      </div>
+
+      <nav class="toc" aria-label="Contents">
+        <strong>Contents</strong>
+        <ol>
+          <li><a href="#s1">About Vet Paw House and these Terms</a></li>
+          <li><a href="#s2">Eligibility and your registration</a></li>
+          <li><a href="#s3">Not veterinary advice</a></li>
+          <li><a href="#s4">Plans, fees and payment</a></li>
+          <li><a href="#s5">Refunds and cancellation</a></li>
+          <li><a href="#s6">Your content (photos, documents and details)</a></li>
+          <li><a href="#s7">Pet ID card and QR code</a></li>
+          <li><a href="#s8">Reminders and messages</a></li>
+          <li><a href="#s9">Acceptable use</a></li>
+          <li><a href="#s10">Our intellectual property</a></li>
+          <li><a href="#s11">Third-party services</a></li>
+          <li><a href="#s12">Changes to the Service, suspension and ending</a></li>
+          <li><a href="#s13">Disclaimers</a></li>
+          <li><a href="#s14">Limits on our liability</a></li>
+          <li><a href="#s15">Your responsibility for claims</a></li>
+          <li><a href="#s16">Changes to these Terms</a></li>
+          <li><a href="#s17">Governing law and disputes</a></li>
+          <li><a href="#s18">General</a></li>
+          <li><a href="#s19">Contact us</a></li>
+        </ol>
+      </nav>
+
+      <section id="s1">
+        <h2>1. About Vet Paw House and these Terms</h2>
+
+        <p>Welcome to Vet Paw House (“we”, “us”, “our”). These Terms &amp; Conditions (“Terms”) apply to your use of our website and services (together, the “Service”), including registering your pet, your pet’s page, reminders, the pet ID card and QR code, and buying a plan.</p>
+        <p>By registering, paying for a plan or otherwise using the Service, you confirm that you have read and agree to these Terms and to our <a href="privacy.html">Privacy Policy</a>. If you do not agree, please do not use the Service.</p>
+        <p>Vet Paw House is a pet record-keeping and reminder service. Depending on your plan, it includes a vaccination schedule, a deworming schedule, WhatsApp and email reminders, a monthly body condition score (BCS) check-in, a memory gallery, a pet ID card with QR code, and a document locker. Features shown as “Coming Soon” on our website are not available yet and may have extra terms or fees when they launch. Separate services, such as our marketplace, may have their own terms.</p>
+      </section>
+      <section id="s2">
+        <h2>2. Eligibility and your registration</h2>
+
+        <ul>
+          <li>You must be at least 18 years old and able to enter into a binding contract under Indian law. If you are younger, a parent or guardian must register and accept these Terms.</li>
+          <li>Give us accurate and complete details about you and your pet, and keep your mobile number and email up to date. We need them to send your reminders.</li>
+          <li>Each plan covers one pet. Register each pet separately.</li>
+          <li>Your pet’s page is opened from our home page with a box password. Keep it private. You are responsible for anything done using it, so contact us straight away if you think someone else knows it.</li>
+        </ul>
+      </section>
+      <section id="s3">
+        <h2>3. Not veterinary advice</h2>
+
+        <div class="note"><strong>Important:</strong> Vet Paw House is not a veterinary clinic and does not give veterinary diagnosis, treatment or medical advice.</div>
+        <p>Vaccination and deworming dates, body condition results and other information in the Service are for record-keeping and general guidance only. Your pet’s real needs may be different. Always follow the advice of your veterinarian, and contact a vet immediately in an emergency.</p>
+        <p>Reminders are only an aid. You remain responsible for making sure your pet receives timely care.</p>
+      </section>
+      <section id="s4">
+        <h2>4. Plans, fees and payment</h2>
+
+        <ul>
+          <li><strong>Plans and prices.</strong> The plans, what each one includes and the prices are shown on our registration page when you sign up. Prices are in Indian Rupees (₹). The price you see when you pay is the price for that purchase.</li>
+          <li><strong>Yearly plans</strong> give you the plan’s features for 12 months from the day we activate it. They do not renew automatically. Renew before they end to keep your features.</li>
+          <li><strong>Lifetime plan</strong> is a one-time payment for the plan’s features for as long as Vet Paw House operates the Service. “Lifetime” means the life of the Service, not the life of your pet or of you. It covers one pet and cannot be transferred to another person.</li>
+          <li><strong>ID card &amp; QR download add-on.</strong> The downloadable pet ID card and QR code can be added to a yearly plan for a small one-time fee. It is already included in the Lifetime plan. You do not need to buy the add-on again when you renew.</li>
+          <li><strong>How you pay.</strong> You pay by UPI to the UPI ID or QR code shown on our registration page, then enter the amount and the UPI transaction reference (UTR) in the form. We check each payment by hand before activating your plan, so activation can take some time. If we cannot match your payment, we may ask you for more details or decline to activate the plan.</li>
+          <li><strong>Stay safe.</strong> Only pay to the UPI ID shown on our official registration page. We will never ask for your UPI PIN, OTP, card details or bank password.</li>
+          <li><strong>Changes.</strong> We may change prices or plan features for future purchases and renewals. A change never affects a period you have already paid for.</li>
+        </ul>
+      </section>
+      <section id="s5">
+        <h2>5. Refunds and cancellation</h2>
+
+        <p>The Service is digital and starts once we activate your plan, so fees are generally non-refundable after activation. We will refund:</p>
+        <ul>
+          <li>a payment made twice or paid in excess;</li>
+          <li>a payment for which we were unable to activate your plan; and</li>
+          <li>the unused part of a yearly plan if we permanently shut down the Service.</li>
+        </ul>
+        <p>To ask for a refund, contact us with your registered mobile number and UTR. We aim to reply within 7 working days. Approved refunds go back to the UPI account the payment came from. Nothing here limits any rights you have under the Consumer Protection Act, 2019 or other law.</p>
+        <p>You may stop using the Service at any time. Stopping does not entitle you to a refund for a period that has already started.</p>
+      </section>
+      <section id="s6">
+        <h2>6. Your content (photos, documents and details)</h2>
+
+        <p>“Your content” means the photos, documents, notes and details you add to the Service.</p>
+        <ul>
+          <li>You keep ownership of your content. You give us a non-exclusive licence to store, process and display it only as needed to run the Service for you, for example to show your pet’s photo on your pet’s page, ID card and home-page card.</li>
+          <li>You promise that you have the right to upload it and that it is lawful. Do not upload anything unlawful, abusive or misleading, or anything that violates someone else’s rights or privacy.</li>
+          <li>We may limit uploads to keep the Service fair and fast. At the moment, the memory gallery allows one new photo every 15 days.</li>
+          <li>We may remove content that breaks these Terms or the law.</li>
+        </ul>
+        <div class="note"><strong>Backups:</strong> Some content, such as memory gallery photos and locker documents, is kept in your own browser on your own device. If you clear your browsing data, change phone or browser, or lose your device, that content can be lost and we may not be able to recover it. Keep your own copies of important documents. Vet Paw House is not a backup service. Please do not store identity documents or bank details in the locker.</div>
+      </section>
+      <section id="s7">
+        <h2>7. Pet ID card and QR code</h2>
+
+        <p>The QR code on your pet’s ID card opens your pet’s page. Anyone who scans the QR code or has the link can see what that page shows. This can include your pet’s details and the owner name and contact number shown on the ID card. It is meant to help a lost pet get home.</p>
+        <p>You decide where to share or print the QR code and ID card. If you want the information shown to be changed or removed, contact us. Please do not misuse an owner’s contact details found through a QR code, for example to harass anyone.</p>
+      </section>
+      <section id="s8">
+        <h2>8. Reminders and messages</h2>
+
+        <p>When you register, you agree that we may contact you by WhatsApp, SMS, phone call and email, using the details you gave us, to send vaccination and deworming reminders, payment and activation updates, renewal notices and important service messages. WhatsApp and other providers have their own terms, and your mobile operator may charge for data or messages.</p>
+        <p>Reminders may be late or may not arrive because of network, provider or device problems. We do not promise delivery or exact timing. You can ask us to stop non-essential messages at any time, although some features may then not work fully.</p>
+      </section>
+      <section id="s9">
+        <h2>9. Acceptable use</h2>
+
+        <p>When using the Service, you agree not to:</p>
+        <ul>
+          <li>break any law, or use the Service to harm, harass or defraud anyone, including sending fake or misleading payment details;</li>
+          <li>try to get into accounts, pages, data or systems you are not allowed to access, or bypass any password or limit;</li>
+          <li>upload viruses or harmful code, or overload, scrape or interfere with the Service;</li>
+          <li>copy, resell, reverse engineer or build a competing service from the Service without our written permission; or</li>
+          <li>pretend to be someone else, or give false details about you or your pet.</li>
+        </ul>
+      </section>
+      <section id="s10">
+        <h2>10. Our intellectual property</h2>
+
+        <p>The Vet Paw House name, logo, website design, text, graphics and software belong to us or our licensors and are protected by law. We give you a limited, personal, non-exclusive, non-transferable right to use the Service under these Terms. You may not copy or use our name or logo without written permission.</p>
+      </section>
+      <section id="s11">
+        <h2>11. Third-party services</h2>
+
+        <p>The Service depends on third parties, such as cloud hosting and database providers, messaging and email providers, UPI apps and banks, and font and code libraries loaded from other websites. They run independently and have their own terms and privacy policies. We are not responsible for their services, outages or actions, although we choose our providers with care.</p>
+      </section>
+      <section id="s12">
+        <h2>12. Changes to the Service, suspension and ending</h2>
+
+        <ul>
+          <li>We work to keep the Service running but do not promise it will always be available or free of errors. We may update, change, pause or stop features, for example for maintenance or improvements.</li>
+          <li>If we permanently shut down the Service, we will give reasonable notice and refund the unused part of any yearly plan as described in Section 5.</li>
+          <li>We may suspend or end your access if you break these Terms, misuse the Service, or give false payment or identity details. Where reasonable, we will tell you why.</li>
+          <li>You can ask us to close your registration at any time. Our <a href="privacy.html">Privacy Policy</a> explains how we handle your data.</li>
+        </ul>
+      </section>
+      <section id="s13">
+        <h2>13. Disclaimers</h2>
+
+        <p>The Service is provided “as is” and “as available”. To the extent the law allows, we do not promise that reminders, schedules or other information will be complete, accurate, timely or suitable for your pet, or that the Service will meet every need. We are not responsible for decisions you make about your pet’s health or care.</p>
+      </section>
+      <section id="s14">
+        <h2>14. Limits on our liability</h2>
+
+        <p>To the extent the law allows, Vet Paw House will not be liable for indirect or consequential losses, or for loss of profits, data or content (including content kept in your browser), missed or late reminders, or harm to a pet. Our total liability to you for any claim relating to the Service is limited to the amount you paid us for the Service in the 12 months before the claim (or, for the Lifetime plan, the amount you paid for it).</p>
+        <p>Nothing in these Terms excludes or limits liability that cannot be excluded or limited by law, or your rights as a consumer under the Consumer Protection Act, 2019.</p>
+      </section>
+      <section id="s15">
+        <h2>15. Your responsibility for claims</h2>
+
+        <p>You agree to be responsible for losses or claims we suffer because you break these Terms or the law, or because of content you uploaded without having the right to do so.</p>
+      </section>
+      <section id="s16">
+        <h2>16. Changes to these Terms</h2>
+
+        <p>We may update these Terms from time to time. We will post the new version on this page with a new “Last updated” date, and tell you about important changes on the website or by message. If you keep using the Service after a change, you accept the updated Terms.</p>
+      </section>
+      <section id="s17">
+        <h2>17. Governing law and disputes</h2>
+
+        <p>These Terms are governed by the laws of India. If you have a problem, please contact us first, because most issues can be solved quickly. If we cannot resolve it, the courts at <mark class="fill">[your city, state]</mark>, India, will have jurisdiction, without affecting any right you have to approach a consumer forum or court where the law allows.</p>
+      </section>
+      <section id="s18">
+        <h2>18. General</h2>
+
+        <p>These Terms and the Privacy Policy are the whole agreement between you and us about the Service. If any part is found unenforceable, the rest still applies. If we do not enforce a right straight away, we have not given it up. You may not transfer your rights under these Terms without our consent. We may send notices to the mobile number or email you gave us.</p>
+      </section>
+      <section id="s19">
+        <h2>19. Contact us</h2>
+
+        <p>Questions about these Terms? Please contact:</p>
+        <p><strong>Vet Paw House</strong><br>
+<mark class="fill">[registered business name and address]</mark><br>
+Phone / WhatsApp: <a href="tel:+917300479727">+91 73004 79727</a><br>
+Email: <mark class="fill">[your support email]</mark></p>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <p>© <span id="year"></span> Vet Paw House. All rights reserved.</p>
+    <p><a href="terms.html">Terms &amp; Conditions</a> · <a href="privacy.html">Privacy Policy</a> · <a href="index.html">Home</a></p>
+  </footer>
+
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

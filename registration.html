@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration now</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="registration.css">
+    <script src="theme.js"></script>
+</head>
+<body>
+      <div class="wrap">
+  <div class="header">
+    <div class="premium-badge">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 6.6L21 9l-5.2 4.4L17.4 21 12 17.3 6.6 21l1.6-7.6L3 9l6.6-.4L12 2z"/></svg>
+      Pet Registration
+    </div>
+    <h1>Register Your Pet</h1>
+    <p>Join the Vet Paw House family in just a couple of minutes 🐾</p>
+  </div>
+ 
+  <div class="progress" id="progress">
+    <div class="dot active" data-step="1"></div>
+    <div class="bar" data-bar="1"></div>
+    <div class="dot" data-step="2"></div>
+    <div class="bar" data-bar="2"></div>
+    <div class="dot" data-step="3"></div>
+    <div class="bar" data-bar="3"></div>
+    <div class="dot" data-step="4"></div>
+  </div>
+ 
+  <div class="card">
+ 
+    <!-- STEP 1: DETAILS -->
+    <form id="step1" class="step active" novalidate>
+      <div class="field" id="f-ownerName">
+        <label>Owner Name</label>
+        <input type="text" name="ownerName" placeholder="e.g. Sahil Choudhary" autocomplete="name">
+        <div class="err">Please enter the owner's name.</div>
+      </div>
+ 
+      <div class="field" id="f-ownerContact">
+        <label>Owner Contact No.</label>
+        <input type="tel" name="ownerContact" placeholder="e.g. 98765 43210" autocomplete="tel">
+        <div class="err">Please enter a valid 10-digit contact number.</div>
+      </div>
+
+      <div class="field" id="f-ownerEmail">
+        <label>Owner Email</label>
+        <input type="email" name="ownerEmail" placeholder="e.g. sahil@example.com" autocomplete="email">
+        <div class="err">Please enter a valid email address.</div>
+      </div>
+ 
+      <div class="field" id="f-petName">
+        <label>Pet Name</label>
+        <input type="text" name="petName" placeholder="e.g. Bruno">
+        <div class="err">Please enter your pet's name.</div>
+      </div>
+ 
+      <div class="row2">
+        <div class="field" id="f-petBreed">
+          <label>Pet Breed</label>
+          <input type="text" name="petBreed" placeholder="e.g. Labrador">
+          <div class="err">Please enter the breed.</div>
+        </div>
+        <div class="field" id="f-petAge">
+          <label>Pet Age</label>
+          <div class="row2" style="gap:8px;">
+            <input type="number" name="petAge" placeholder="e.g. 2" min="0" max="600" style="flex:1;">
+            <select name="petAgeUnit" style="flex:0 0 110px;">
+              <option value="Years" selected>Years</option>
+              <option value="Months">Months</option>
+            </select>
+          </div>
+          <div class="err">Please enter a valid age.</div>
+        </div>
+      </div>
+ 
+      <div class="field" id="f-petSex">
+        <label>Pet Sex</label>
+        <select name="petSex">
+          <option value="" selected disabled>Select sex</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+        <div class="err">Please select your pet's sex.</div>
+      </div>
+ 
+      <div class="field" id="f-petPhoto">
+        <label>Pet Photo</label>
+        <div class="photo-drop" id="photoDrop">
+          <div class="ph-icon">📷</div>
+          <div class="ph-text">Tap to upload your pet's photo</div>
+          <input type="file" name="petPhoto" id="petPhoto" accept="image/*">
+        </div>
+        <img class="photo-preview" id="photoPreview" alt="Pet preview">
+        <div class="err">Please upload a photo of your pet.</div>
+      </div>
+ 
+      <div class="btn-row">
+        <button type="button" class="btn btn-primary" onclick="goToPlans()">Continue to Plans →</button>
+      </div>
+    </form>
+ 
+    <!-- STEP 2: CHOOSE A PLAN -->
+    <div id="step2" class="step">
+      <div class="step-head">
+        <h2>Choose your plan</h2>
+        <p>Choose a yearly plan, or pay once for lifetime access. You can also add the downloadable ID card &amp; QR code.</p>
+      </div>
+
+      <div class="plans" id="plansList"></div>
+      <div id="addonWrap"></div>
+      <div class="warn-line" id="planWarning">Select a plan to continue.</div>
+
+      <div class="btn-row">
+        <button type="button" class="btn btn-ghost" onclick="goToStep(1)">← Back</button>
+        <button type="button" class="btn btn-primary" onclick="goToPayment()">Continue to Payment →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: PAY VIA UPI -->
+    <div id="step3" class="step">
+      <div class="pay-summary" id="summaryBox"></div>
+
+      <div class="section-title">1. Pay via UPI</div>
+      <div class="upi-box">
+        <span class="upi-id" id="upiId"></span>
+        <button type="button" class="copy-btn" id="copyUpiBtn">Copy</button>
+      </div>
+      <ol class="steps-list">
+        <li>Open any UPI app (Google Pay, PhonePe, Paytm).</li>
+        <li>Pay <strong id="payAmountText"></strong> to the UPI ID above.</li>
+        <li>Copy the 12-digit UPI transaction / reference ID (UTR) from your payment app.</li>
+        <li>Paste it below and submit for verification.</li>
+      </ol>
+
+      <div class="section-title">2. Confirm your payment</div>
+      <div class="field" id="f-utr">
+        <label for="utrInput">UPI Transaction / Reference ID (UTR)</label>
+        <input type="text" id="utrInput" placeholder="e.g. 402911234567" autocomplete="off">
+        <small>Find it in your payment app's transaction history right after paying.</small>
+        <div class="err">Enter the UTR exactly as shown (6–25 letters or numbers, no spaces).</div>
+      </div>
+      <div class="field" id="f-amount">
+        <label for="amountPaid">Amount Paid (₹)</label>
+        <input type="number" id="amountPaid" min="1" inputmode="numeric">
+        <div class="err">Enter the amount you paid.</div>
+      </div>
+
+      <div class="send-status" id="sendStatus"></div>
+
+      <div class="btn-row">
+        <button type="button" class="btn btn-ghost" onclick="goToStep(2)">← Back</button>
+        <button type="button" class="btn btn-primary" id="submitPayBtn" onclick="submitPayment()">Submit for Verification</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: SUBMITTED -->
+    <div id="step4" class="step">
+      <div class="success">
+        <div class="check">
+          <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <h2>Payment Submitted!</h2>
+        <p id="successText"></p>
+        <div class="pay-summary" id="successSummary" style="margin-top:1.4rem;text-align:left;"></div>
+        <div class="btn-row">
+          <button type="button" class="btn btn-primary" onclick="window.location.href='home.html'">Go to Home</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  /* ===================== CONFIG — EDIT THESE ===================== */
+  const UPI_ID = "7300479727@centralbank";  // <-- the UPI ID owners will pay to
+  const RECEIVER_EMAIL = "housepaw07@gmail.com";
+
+  // Web3Forms config — sign up free at https://web3forms.com
+  // Get your Access Key from the dashboard after creating a form pointed at RECEIVER_EMAIL
+  const WEB3FORMS_ACCESS_KEY = "ee2fb5fe-647a-4a1f-87a5-52584cbded54";
+
+  // Plans shown on step 2. Edit names, prices and features here.
+  // period: "year" = billed every year, "lifetime" = one-time payment.
+  const PLANS = {
+    basic: {
+      id: "basic",
+      name: "Basic Plan",
+      price: 199,
+      period: "year",
+      features: [
+        "Vaccination schedule",
+        "Vaccine date reminders on WhatsApp",
+        "Deworming schedule",
+        "Deworming date reminders on WhatsApp",
+        "Pet body condition score (BCS)",
+        "Memory gallery"
+      ]
+    },
+    premium: {
+      id: "premium",
+      name: "Premium Plan",
+      price: 249,
+      period: "year",
+      badge: "Best value",
+      includesPrevious: true,
+      features: [
+        "Everything in the Basic Plan",
+        "Pet ID card",
+        "Document locker for your pet"
+      ]
+    },
+    lifetime: {
+      id: "lifetime",
+      name: "Lifetime Plan",
+      price: 599,
+      period: "lifetime",
+      badge: "Pay once",
+      includesPrevious: true,
+      features: [
+        "Everything in the Premium Plan",
+        "Downloadable pet ID card",
+        "Downloadable QR code",
+        "One-time payment, no yearly renewal"
+      ]
+    }
+  };
+
+  // Optional one-time add-on for the yearly plans (already included in the Lifetime Plan).
+  const ADDON = {
+    id: "idqr",
+    name: "Downloadable pet ID card & QR code",
+    short: "ID card & QR download",
+    price: 99,
+    note: "Download your pet's ID card and QR code as images."
+  };
+  /* ================================================================= */
+ 
+  const form = document.getElementById('step1');
+  let petPhotoDataUrl = "";
+  let formData = null;
+  let selectedPlan = null;
+
+  /* ---- order helpers (plan + optional ID card & QR add-on) ---- */
+  let addonSelected = false;
+  function priceSuffix(p) { return p.period === 'lifetime' ? 'one time' : '/ year'; }
+  function priceLabel(p)  { return `₹${p.price} ${priceSuffix(p)}`; }
+  // Lifetime already includes the ID card & QR download, so it is never charged for the add-on.
+  function addonCharge()  { return selectedPlan && selectedPlan.id !== 'lifetime' && addonSelected ? ADDON.price : 0; }
+  function hasIdQr()      { return !!selectedPlan && (selectedPlan.id === 'lifetime' || addonSelected); }
+  function orderTotal()   { return selectedPlan.price + addonCharge(); }
+  function totalLabel() {
+    if (selectedPlan.id === 'lifetime') return `₹${orderTotal()} (one time)`;
+    return addonCharge() ? `₹${orderTotal()} (first year)` : `₹${orderTotal()} / year`;
+  }
+  function planLabel() {   // plan name as saved / shown to the team
+    return selectedPlan.name + (addonCharge() ? ' + ID card & QR add-on' : '');
+  }
+ 
+  // photo preview
+  const photoInput = document.getElementById('petPhoto');
+  const photoPreview = document.getElementById('photoPreview');
+  photoInput.addEventListener('change', () => {
+    const file = photoInput.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      petPhotoDataUrl = e.target.result;
+      photoPreview.src = petPhotoDataUrl;
+      photoPreview.style.display = 'block';
+      clearError('f-petPhoto');
+    };
+    reader.readAsDataURL(file);
+  });
+ 
+  function setError(id, show) {
+    document.getElementById(id).classList.toggle('invalid', show);
+  }
+  function clearError(id) { setError(id, false); }
+ 
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+
+  function validateStep1() {
+    let ok = true;
+    const data = Object.fromEntries(new FormData(form).entries());
+ 
+    if (!data.ownerName || data.ownerName.trim().length < 2) { setError('f-ownerName', true); ok = false; } else clearError('f-ownerName');
+    if (!/^[0-9+\-\s]{7,15}$/.test(data.ownerContact || "")) { setError('f-ownerContact', true); ok = false; } else clearError('f-ownerContact');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.ownerEmail || "")) { setError('f-ownerEmail', true); ok = false; } else clearError('f-ownerEmail');
+    if (!data.petName || data.petName.trim().length < 1) { setError('f-petName', true); ok = false; } else clearError('f-petName');
+    if (!data.petBreed || data.petBreed.trim().length < 1) { setError('f-petBreed', true); ok = false; } else clearError('f-petBreed');
+    if (data.petAge === "" || isNaN(data.petAge) || Number(data.petAge) < 0) { setError('f-petAge', true); ok = false; } else clearError('f-petAge');
+    if (!data.petSex) { setError('f-petSex', true); ok = false; } else clearError('f-petSex');
+    if (!petPhotoDataUrl) { setError('f-petPhoto', true); ok = false; } else clearError('f-petPhoto');
+
+    if (ok) data.petAgeDisplay = `${data.petAge} ${data.petAgeUnit || 'Years'}`;
+    return ok ? data : null;
+  }
+ 
+  function goToStep(n) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step' + n).classList.add('active');
+    document.querySelectorAll('.progress .dot').forEach(d => {
+      const step = Number(d.dataset.step);
+      d.classList.toggle('active', step === n);
+      d.classList.toggle('done', step < n);
+    });
+    document.querySelectorAll('.progress .bar').forEach(b => {
+      const step = Number(b.dataset.bar);
+      b.classList.toggle('done', step < n);
+    });
+  }
+
+  /* ===================== STEP 1 -> 2 ===================== */
+  function goToPlans() {
+    const data = validateStep1();
+    if (!data) return;
+    formData = data;
+    goToStep(2);
+  }
+
+  /* ===================== STEP 2: PLANS ===================== */
+  function renderPlans() {
+    const list = document.getElementById('plansList');
+    list.innerHTML = Object.values(PLANS).map(p => `
+      <label class="plan-card" data-plan="${p.id}">
+        ${p.badge ? `<span class="plan-badge">${escapeHtml(p.badge)}</span>` : ''}
+        <input type="radio" name="plan" value="${p.id}">
+        <div class="plan-top">
+          <span class="plan-radio"></span>
+          <span class="plan-name">${escapeHtml(p.name)}</span>
+          <span class="plan-price">₹${p.price}<span>${priceSuffix(p)}</span></span>
+        </div>
+        <ul class="plan-features">
+          ${p.features.map((f, i) => `<li${p.includesPrevious && i === 0 ? ' class="plus"' : ''}>${escapeHtml(f)}</li>`).join('')}
+        </ul>
+      </label>
+    `).join('');
+
+    list.addEventListener('change', (e) => {
+      if (e.target.name !== 'plan') return;
+      selectedPlan = PLANS[e.target.value];
+      list.querySelectorAll('.plan-card').forEach(c => {
+        c.classList.toggle('selected', c.dataset.plan === selectedPlan.id);
+      });
+      document.getElementById('planWarning').classList.remove('show');
+      updateAddonUI();
+    });
+  }
+  renderPlans();
+
+  function renderAddon() {
+    document.getElementById('addonWrap').innerHTML = `
+      <label class="addon-card" id="addonCard">
+        <input type="checkbox" id="addonCheck">
+        <span class="addon-check"></span>
+        <span class="addon-info">
+          <span class="addon-title">Add ${escapeHtml(ADDON.name)}</span>
+          <span class="addon-sub" id="addonSub"></span>
+        </span>
+        <span class="addon-price" id="addonPrice"></span>
+      </label>
+    `;
+    document.getElementById('addonCheck').addEventListener('change', (e) => {
+      addonSelected = e.target.checked;
+      updateAddonUI();
+    });
+    updateAddonUI();
+  }
+
+  function updateAddonUI() {
+    const card = document.getElementById('addonCard');
+    const box = document.getElementById('addonCheck');
+    if (!card || !box) return;
+    const included = !!selectedPlan && selectedPlan.id === 'lifetime';
+    box.disabled = included;
+    box.checked = included || addonSelected;
+    card.classList.toggle('checked', box.checked);
+    card.classList.toggle('included', included);
+    document.getElementById('addonSub').textContent = included ? 'Already included in the Lifetime Plan.' : ADDON.note;
+    document.getElementById('addonPrice').innerHTML = included ? 'Included' : `+ ₹${ADDON.price}<span>one time</span>`;
+  }
+  renderAddon();
+
+  /* ===================== STEP 2 -> 3 ===================== */
+  function goToPayment() {
+    if (!selectedPlan) {
+      document.getElementById('planWarning').classList.add('show');
+      return;
+    }
+
+    document.getElementById('summaryBox').innerHTML = `
+      <div><span>Pet Name</span><span>${escapeHtml(formData.petName)}</span></div>
+      <div><span>Owner</span><span>${escapeHtml(formData.ownerName)}</span></div>
+      <div><span>Owner Email</span><span>${escapeHtml(formData.ownerEmail)}</span></div>
+      <div><span>Plan</span><span>${escapeHtml(selectedPlan.name)} — ${escapeHtml(priceLabel(selectedPlan))}</span></div>
+      ${selectedPlan.id === 'lifetime'
+        ? `<div><span>ID card &amp; QR download</span><span>Included</span></div>`
+        : (addonCharge() ? `<div><span>Add-on</span><span>${escapeHtml(ADDON.short)} — ₹${ADDON.price} one time</span></div>` : '')}
+      <div class="total"><span>Amount to pay</span><span>${escapeHtml(totalLabel())}</span></div>
+    `;
+
+    document.getElementById('upiId').textContent = UPI_ID;
+    document.getElementById('payAmountText').textContent = `₹${orderTotal()}`;
+    document.getElementById('amountPaid').value = orderTotal();
+
+    // reset payment state each time this step is (re)entered
+    clearError('f-utr');
+    clearError('f-amount');
+    const status = document.getElementById('sendStatus');
+    status.classList.remove('error');
+    status.textContent = '';
+    const btn = document.getElementById('submitPayBtn');
+    btn.disabled = false;
+    btn.textContent = 'Submit for Verification';
+
+    goToStep(3);
+  }
+
+  /* ===================== STEP 3: UPI PAYMENT ===================== */
+  document.getElementById('copyUpiBtn').addEventListener('click', () => {
+    const btn = document.getElementById('copyUpiBtn');
+    const original = btn.textContent;
+    const done = (text) => {
+      btn.textContent = text;
+      setTimeout(() => { btn.textContent = original; }, 1500);
+    };
+    if (!navigator.clipboard) { done("Copy manually"); return; }
+    navigator.clipboard.writeText(UPI_ID).then(() => done("Copied!")).catch(() => done("Copy manually"));
+  });
+
+  // Wait for firebase.js to finish loading (poll up to ~5s) instead of failing instantly
+  function waitForFirebase() {
+    if (typeof window.saveUserToFirebase === 'function') return Promise.resolve(true);
+    return new Promise((resolve) => {
+      let waited = 0;
+      const iv = setInterval(() => {
+        waited += 100;
+        if (typeof window.saveUserToFirebase === 'function') {
+          clearInterval(iv);
+          resolve(true);
+        } else if (waited >= 5000) {
+          clearInterval(iv);
+          resolve(false);
+        }
+      }, 100);
+    });
+  }
+
+  // Email alert to the team. Best-effort: the registration and payment are
+  // already saved in Firebase (the admin page is the source of truth).
+  async function notifyTeam(firebaseId, photoURL, utr, amount) {
+    const payload = {
+      access_key: WEB3FORMS_ACCESS_KEY,
+      subject: `New Vet Paw House Registration — ${formData.petName} (${planLabel()})`,
+      from_name: "Vet Paw House Registration",
+      owner_name: formData.ownerName,
+      owner_contact: formData.ownerContact,
+      owner_email: formData.ownerEmail,
+      replyto: formData.ownerEmail,
+      pet_name: formData.petName,
+      pet_breed: formData.petBreed,
+      pet_sex: formData.petSex,
+      pet_age: formData.petAgeDisplay,
+      pet_photo: photoURL,
+      to_email: RECEIVER_EMAIL,
+      plan: selectedPlan.name,
+      plan_price: priceLabel(selectedPlan),
+      addon_id_card_qr: selectedPlan.id === 'lifetime' ? 'Included in Lifetime Plan' : (addonCharge() ? `Yes — ₹${ADDON.price} one time` : 'No'),
+      total_due: `₹${orderTotal()}`,
+      amount_paid: `₹${amount}`,
+      utr: utr,
+      payment_status: "Pending verification",
+      firebase_id: firebaseId
+    };
+
+    const res = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const result = await res.json();
+    if (!result.success) throw new Error(result.message || "Email send failed");
+  }
+
+  async function submitPayment() {
+    const utr = document.getElementById('utrInput').value.trim();
+    const amount = Number(document.getElementById('amountPaid').value);
+
+    let ok = true;
+    if (!/^[A-Za-z0-9]{6,25}$/.test(utr)) { setError('f-utr', true); ok = false; } else clearError('f-utr');
+    if (!amount || amount <= 0) { setError('f-amount', true); ok = false; } else clearError('f-amount');
+    if (!ok) return;
+
+    const btn = document.getElementById('submitPayBtn');
+    const status = document.getElementById('sendStatus');
+    btn.disabled = true;
+    btn.textContent = "Submitting...";
+    status.classList.remove('error');
+    status.textContent = "Saving your registration...";
+
+    try {
+      if (!(await waitForFirebase())) {
+        throw new Error("Couldn't connect to the database. Refresh the page and try again.");
+      }
+
+      const saveResult = await window.saveUserToFirebase(formData, petPhotoDataUrl, {
+        planId: selectedPlan.id,
+        planName: planLabel(),
+        planAmount: orderTotal(),      // total the owner should pay (plan + add-on)
+        planPeriod: selectedPlan.period,
+        basePrice: selectedPlan.price,
+        addonIdQr: hasIdQr(),          // true if ID card & QR download is included or bought
+        addonPrice: addonCharge(),
+        amount: amount,
+        utr: utr
+      });
+
+      if (!saveResult) {
+        throw new Error("Couldn't save to the database. Check Firebase rules/console.");
+      }
+
+      // Fire-and-forget: a failed email must not block a saved registration.
+      notifyTeam(saveResult.id, saveResult.photoURL, utr, amount)
+        .catch(err => console.warn("Team email failed (registration is saved):", err));
+
+      document.getElementById('successText').innerHTML =
+        `Thanks for registering ${escapeHtml(formData.petName)} 🐾<br>` +
+        `We're verifying your payment, which usually takes a few hours. Your plan is activated once it's approved.`;
+      document.getElementById('successSummary').innerHTML = `
+        <div><span>Plan</span><span>${escapeHtml(selectedPlan.name)}</span></div>
+        ${hasIdQr() ? `<div><span>ID card &amp; QR download</span><span>${selectedPlan.id === 'lifetime' ? 'Included' : 'Added'}</span></div>` : ''}
+        <div><span>Amount paid</span><span>₹${escapeHtml(amount)}</span></div>
+        <div><span>UTR</span><span>${escapeHtml(utr)}</span></div>
+        <div class="total"><span>Status</span><span>Pending verification</span></div>
+      `;
+
+      status.textContent = "";
+      goToStep(4);
+    } catch (err) {
+      console.error("submitPayment error:", err);
+      status.classList.add('error');
+      status.textContent = "Couldn't submit: " + err.message;
+      btn.disabled = false;
+      btn.textContent = "Submit for Verification";
+    }
+  }
+</script>
+<script type="module" src="firebase.js"></script>
+<script type="module" src="register.js"></script>
+</body>
+</html>

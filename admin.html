@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex" />
+<title>Payment Verification | Paw House Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{ margin:0; padding:0; box-sizing:border-box; }
+  :root{
+    --bg:#0d0f14;
+    --surface:#13151c;
+    --card:#1a1d28;
+    --accent:#f4a24d;
+    --accent2:#e07b7b;
+    --accent3:#c96fd0;
+    --text:#e8e2d5;
+    --muted:#7a7a8c;
+    --ok:#7bd3a0;
+  }
+  html,body{ min-height:100%; background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; }
+  body{ position:relative; overflow-x:hidden; }
+  body::before{
+    content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(circle at 18% 20%, rgba(244,162,77,0.10), transparent 45%),
+      radial-gradient(circle at 85% 75%, rgba(201,111,208,0.10), transparent 45%),
+      radial-gradient(circle at 60% 10%, rgba(100,160,255,0.06), transparent 40%);
+  }
+
+  /* ---------- Full-screen states (loading / login / denied) ---------- */
+  .screen{
+    position:fixed; inset:0; z-index:20;
+    display:flex; align-items:center; justify-content:center; flex-direction:column;
+    gap:12px; padding:20px; text-align:center;
+    background:var(--bg);
+  }
+  .spinner-lg{
+    width:36px; height:36px;
+    border:3px solid rgba(244,162,77,0.2);
+    border-top-color:var(--accent);
+    border-radius:50%;
+    animation:spin .8s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  #loadingScreen p{ color:var(--muted); font-size:.85rem; }
+
+  #accessDenied h2{
+    font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:900; color:var(--accent2);
+  }
+  #accessDenied p{ color:var(--muted); font-size:.88rem; max-width:340px; line-height:1.6; }
+
+  /* ---------- Buttons ---------- */
+  .btn{
+    padding:.8rem 1.4rem; border-radius:60px; border:none;
+    font-family:'Inter',sans-serif; font-weight:700; font-size:.8rem; letter-spacing:.06em;
+    text-transform:uppercase; cursor:pointer;
+    transition:transform .2s, box-shadow .2s, opacity .2s, background .2s;
+  }
+  .btn:disabled{ opacity:.5; cursor:not-allowed; transform:none; }
+  .btn:focus-visible, .tab-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  .btn-primary{
+    background:linear-gradient(135deg,#f4a24d,#e07b7b); color:#0d0f14;
+    box-shadow:0 0 30px rgba(244,162,77,0.3);
+  }
+  .btn-primary:hover:not(:disabled){ transform:translateY(-2px); box-shadow:0 0 50px rgba(244,162,77,0.45); }
+  .btn-ghost{
+    background:rgba(244,162,77,0.08); border:1.5px solid rgba(244,162,77,0.35); color:var(--accent);
+  }
+  .btn-ghost:hover:not(:disabled){ background:rgba(244,162,77,0.15); }
+  .btn-danger{
+    background:rgba(224,123,123,0.08); border:1.5px solid rgba(224,123,123,0.5); color:var(--accent2);
+  }
+  .btn-danger:hover:not(:disabled){ background:rgba(224,123,123,0.16); }
+  .btn-sm{ padding:.5rem 1rem; font-size:.7rem; }
+
+  /* ---------- Login ---------- */
+  .login-card{
+    width:100%; max-width:380px; text-align:left;
+    background:rgba(19,21,28,0.78);
+    border:1px solid rgba(244,162,77,0.18);
+    border-radius:24px; padding:2rem 1.8rem;
+    box-shadow:0 0 80px rgba(244,162,77,0.08), 0 2px 40px rgba(0,0,0,0.5);
+  }
+  .login-card h1{
+    font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:900;
+    background:linear-gradient(135deg,#f4a24d,#e07b7b);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    margin-bottom:.3rem;
+  }
+  .login-card > p{ color:var(--muted); font-size:.82rem; margin-bottom:1.5rem; }
+  .field{ margin-bottom:1.1rem; }
+  .field label{
+    display:block; font-size:.72rem; font-weight:600; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:.5rem;
+  }
+  .field input{
+    width:100%; background:rgba(13,15,20,0.7);
+    border:1px solid rgba(244,162,77,0.2); border-radius:12px;
+    padding:.8rem 1rem; color:var(--text);
+    font-family:'Inter',sans-serif; font-size:.92rem; outline:none;
+    transition:border-color .2s, box-shadow .2s;
+  }
+  .field input:focus{ border-color:var(--accent); box-shadow:0 0 0 3px rgba(244,162,77,0.12); }
+  .msg{ min-height:18px; font-size:.78rem; color:var(--accent2); margin-bottom:.8rem; }
+  .login-card .btn{ width:100%; }
+
+  /* ---------- Topbar ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:10;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:14px 24px;
+    background:rgba(13,15,20,0.85); backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(244,162,77,0.18);
+  }
+  .brand{
+    font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:900;
+    background:linear-gradient(135deg,#f4a24d,#e07b7b);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  }
+  .topbar-right{ display:flex; align-items:center; gap:14px; }
+  .topbar-right a{ color:var(--muted); font-size:.8rem; font-weight:600; text-decoration:none; }
+  .topbar-right a:hover{ color:var(--accent); }
+
+  /* ---------- Page ---------- */
+  #app{ position:relative; z-index:1; }
+  .container{ max-width:860px; margin:0 auto; padding:2rem 1.2rem 4rem; }
+  .page-title h1{ font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:900; margin-bottom:.3rem; }
+  .page-title p{ color:var(--muted); font-size:.86rem; margin-bottom:1.6rem; line-height:1.5; }
+
+  .tabs{
+    display:flex; gap:6px; max-width:360px; margin-bottom:1.5rem; padding:4px;
+    background:rgba(19,21,28,0.78);
+    border:1px solid rgba(244,162,77,0.18); border-radius:60px;
+  }
+  .tab-btn{
+    flex:1; padding:.6rem 0; border:none; background:transparent; border-radius:60px;
+    font-family:'Inter',sans-serif; font-size:.8rem; font-weight:700;
+    color:var(--muted); cursor:pointer; transition:all .15s ease;
+  }
+  .tab-btn.active{ background:linear-gradient(135deg,#f4a24d,#e07b7b); color:#0d0f14; }
+
+  .empty-state{ text-align:center; padding:3rem 1rem; color:var(--muted); font-size:.88rem; }
+
+  /* ---------- Payment cards ---------- */
+  .payment-card{
+    display:flex; flex-direction:column; gap:.9rem;
+    background:rgba(19,21,28,0.78);
+    border:1px solid rgba(244,162,77,0.18);
+    border-radius:18px; padding:1.2rem 1.3rem; margin-bottom:1rem;
+  }
+  .payment-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+  .payment-name{ font-weight:700; font-size:1rem; }
+  .payment-sub{ font-size:.8rem; color:var(--muted); margin-top:2px; word-break:break-all; }
+  .payment-date{ font-size:.74rem; color:var(--muted); margin-top:6px; }
+
+  .status-pill{
+    font-size:.68rem; font-weight:700; padding:.28rem .8rem; border-radius:40px;
+    text-transform:capitalize; white-space:nowrap; border:1px solid transparent;
+  }
+  .status-pill.pending{ background:rgba(244,162,77,0.12); color:var(--accent); border-color:rgba(244,162,77,0.4); }
+  .status-pill.approved{ background:rgba(123,211,160,0.12); color:var(--ok); border-color:rgba(123,211,160,0.4); }
+  .status-pill.rejected{ background:rgba(224,123,123,0.12); color:var(--accent2); border-color:rgba(224,123,123,0.4); }
+
+  .payment-details{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:12px;
+    background:rgba(13,15,20,0.6);
+    border:1px solid rgba(244,162,77,0.12);
+    border-radius:12px; padding:.9rem 1rem;
+  }
+  .payment-details .label{ color:var(--muted); font-size:.7rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; }
+  .payment-details .value{ font-weight:600; font-size:.88rem; margin-top:3px; word-break:break-all; }
+  .payment-details .value.utr{ color:var(--accent); letter-spacing:.02em; }
+
+  .flag, .reject-note{
+    font-size:.8rem; line-height:1.5; padding:.55rem .85rem; border-radius:10px;
+    color:var(--accent2); background:rgba(224,123,123,0.1); border:1px solid rgba(224,123,123,0.3);
+  }
+
+  .action-row{ display:flex; gap:.8rem; }
+  .action-row .btn{ flex:1; }
+
+  @media (max-width:520px){
+    .topbar{ padding:12px 16px; }
+    .container{ padding:1.5rem 1rem 3rem; }
+    .action-row{ flex-direction:column; }
+    .payment-card{ padding:1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="loadingScreen" class="screen">
+  <div class="spinner-lg"></div>
+  <p>Checking access...</p>
+</div>
+
+<div id="loginScreen" class="screen" style="display:none;">
+  <form id="loginForm" class="login-card" novalidate>
+    <h1>Admin sign in</h1>
+    <p>Sign in to review payment submissions.</p>
+    <div class="field">
+      <label for="loginEmail">Email</label>
+      <input type="email" id="loginEmail" autocomplete="username" required>
+    </div>
+    <div class="field">
+      <label for="loginPassword">Password</label>
+      <input type="password" id="loginPassword" autocomplete="current-password" required>
+    </div>
+    <div class="msg" id="loginMsg" role="alert"></div>
+    <button type="submit" class="btn btn-primary" id="loginBtn">Sign in</button>
+  </form>
+</div>
+
+<div id="accessDenied" class="screen" style="display:none;">
+  <h2 id="deniedTitle">Access denied</h2>
+  <p id="deniedText">This account doesn't have permission to view this page.</p>
+  <button type="button" class="btn btn-ghost btn-sm" id="deniedSignOut">Sign out</button>
+</div>
+
+<div id="app" style="display:none;">
+
+  <div class="topbar">
+    <span class="brand">Paw House Admin</span>
+    <div class="topbar-right">
+      <a href="home.html">Home</a>
+      <button type="button" class="btn btn-ghost btn-sm" id="signOutBtn">Sign out</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="page-title">
+      <h1>Payment verification</h1>
+      <p>Match each UTR with your UPI or bank history, then approve or reject. Approving activates the owner's plan.</p>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="pending" id="tabPending">Pending</button>
+      <button class="tab-btn" data-tab="history" id="tabHistory">History</button>
+    </div>
+
+    <div id="pendingList"></div>
+    <div id="historyList" style="display:none;"></div>
+
+    <div class="empty-state" id="emptyPending" style="display:none;">No pending payments right now.</div>
+    <div class="empty-state" id="emptyHistory" style="display:none;">No reviewed payments yet.</div>
+  </div>
+
+</div>
+
+<script type="module">
+  import { app } from "./firebase.js";
+  import {
+    getAuth,
+    onAuthStateChanged,
+    signInWithEmailAndPassword,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    getDoc,
+    collection,
+    query,
+    orderBy,
+    getDocs,
+    writeBatch,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const $ = (id) => document.getElementById(id);
+
+  // ---------- Screen switching ----------
+  const SCREENS = ["loadingScreen", "loginScreen", "accessDenied", "app"];
+  function showOnly(id){
+    SCREENS.forEach((s) => {
+      $(s).style.display = s === id ? (s === "app" ? "block" : "flex") : "none";
+    });
+  }
+
+  function showDenied(title, text){
+    $("deniedTitle").textContent = title;
+    $("deniedText").textContent = text;
+    showOnly("accessDenied");
+  }
+
+  // ---------- Auth ----------
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      showOnly("loginScreen");
+      return;
+    }
+
+    showOnly("loadingScreen");
+    try {
+      // Admin check: users/{uid} must have role === "admin"
+      const userSnap = await getDoc(doc(db, "users", user.uid));
+      const userData = userSnap.exists() ? userSnap.data() : {};
+
+      if (userData.role !== "admin") {
+        showDenied("Access denied", "This account doesn't have permission to view this page.");
+        return;
+      }
+
+      await loadPayments();
+      showOnly("app");
+    } catch (err) {
+      console.error("Access check failed:", err);
+      showDenied("Something went wrong", "Couldn't load payments. Refresh the page, or check your Firestore rules.");
+    }
+  });
+
+  function friendlyAuthError(code){
+    const map = {
+      "auth/invalid-credential": "Email or password is incorrect.",
+      "auth/invalid-email": "Enter a valid email address.",
+      "auth/user-disabled": "This account has been disabled.",
+      "auth/too-many-requests": "Too many attempts. Wait a few minutes and try again.",
+      "auth/network-request-failed": "Network error. Check your connection and try again."
+    };
+    return map[code] || ("Couldn't sign in (" + (code || "unknown error") + ").");
+  }
+
+  $("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const msg = $("loginMsg");
+    const btn = $("loginBtn");
+    msg.textContent = "";
+    btn.disabled = true;
+    btn.textContent = "Signing in...";
+    try {
+      await signInWithEmailAndPassword(auth, $("loginEmail").value.trim(), $("loginPassword").value);
+      // onAuthStateChanged takes it from here
+    } catch (err) {
+      msg.textContent = friendlyAuthError(err.code);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Sign in";
+    }
+  });
+
+  $("signOutBtn").addEventListener("click", () => signOut(auth));
+  $("deniedSignOut").addEventListener("click", () => signOut(auth));
+
+  // ---------- Tabs ----------
+  let currentTab = "pending";
+  let counts = { pending: 0, history: 0 };
+
+  $("tabPending").addEventListener("click", () => switchTab("pending"));
+  $("tabHistory").addEventListener("click", () => switchTab("history"));
+
+  function switchTab(tab){
+    currentTab = tab;
+    const isPending = tab === "pending";
+    $("tabPending").classList.toggle("active", isPending);
+    $("tabHistory").classList.toggle("active", !isPending);
+    $("pendingList").style.display = isPending ? "block" : "none";
+    $("historyList").style.display = isPending ? "none" : "block";
+    $("emptyPending").style.display = isPending && counts.pending === 0 ? "block" : "none";
+    $("emptyHistory").style.display = !isPending && counts.history === 0 ? "block" : "none";
+  }
+
+  // ---------- Load & render payments ----------
+  async function loadPayments(){
+    const pendingList = $("pendingList");
+    const historyList = $("historyList");
+    pendingList.innerHTML = "";
+    historyList.innerHTML = "";
+
+    const snap = await getDocs(query(collection(db, "payments"), orderBy("createdAt", "desc")));
+
+    // Count how often each UTR appears, so repeats can be flagged.
+    const utrCounts = {};
+    snap.forEach((d) => {
+      const utr = String(d.data().utr || "").trim().toLowerCase();
+      if (utr) utrCounts[utr] = (utrCounts[utr] || 0) + 1;
+    });
+
+    counts = { pending: 0, history: 0 };
+
+    snap.forEach((docSnap) => {
+      const data = docSnap.data();
+      const utrKey = String(data.utr || "").trim().toLowerCase();
+      const card = buildCard(docSnap.id, data, utrCounts[utrKey] || 1);
+
+      if (data.status === "pending") {
+        pendingList.appendChild(card);
+        counts.pending++;
+      } else {
+        historyList.appendChild(card);
+        counts.history++;
+      }
+    });
+
+    $("tabPending").textContent = `Pending (${counts.pending})`;
+    $("tabHistory").textContent = `History (${counts.history})`;
+    switchTab(currentTab);
+  }
+
+  function formatDate(timestamp){
+    if (!timestamp || !timestamp.toDate) return "—";
+    return timestamp.toDate().toLocaleString("en-IN", {
+      day: "numeric", month: "short", year: "numeric",
+      hour: "2-digit", minute: "2-digit"
+    });
+  }
+
+  function escapeHtml(str){
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function buildCard(paymentId, data, utrCount){
+    const card = document.createElement("div");
+    card.className = "payment-card";
+
+    const status = data.status || "pending";
+    const flags = [];
+    if (status === "pending") {
+      if (utrCount > 1) {
+        flags.push(`This UTR was submitted ${utrCount} times. Check it before approving.`);
+      }
+      if (data.planAmount != null && Number(data.amount) !== Number(data.planAmount)) {
+        flags.push(`Amount entered (₹${escapeHtml(String(data.amount ?? "—"))}) doesn't match the plan price (₹${escapeHtml(String(data.planAmount))}).`);
+      }
+    }
+
+    card.innerHTML = `
+      <div class="payment-top">
+        <div>
+          <div class="payment-name">${escapeHtml(data.ownerName || "Unknown")}</div>
+          <div class="payment-sub">${escapeHtml(data.ownerEmail || "—")}</div>
+          <div class="payment-sub">${escapeHtml(data.ownerContact || "—")}</div>
+          <div class="payment-date">${formatDate(data.createdAt)}</div>
+        </div>
+        <span class="status-pill ${escapeHtml(status)}">${escapeHtml(status)}</span>
+      </div>
+      <div class="payment-details">
+        <div>
+          <div class="label">Pet</div>
+          <div class="value">${escapeHtml(data.petName || "—")}</div>
+        </div>
+        <div>
+          <div class="label">Plan</div>
+          <div class="value">${escapeHtml(data.planName || "—")}${data.planAmount != null ? " (₹" + escapeHtml(String(data.planAmount)) + ")" : ""}</div>
+        </div>
+        <div>
+          <div class="label">Amount paid</div>
+          <div class="value">₹${escapeHtml(String(data.amount ?? "—"))}</div>
+        </div>
+        <div>
+          <div class="label">UTR / Reference ID</div>
+          <div class="value utr">${escapeHtml(data.utr || "—")}</div>
+        </div>
+      </div>
+      ${flags.map((f) => `<div class="flag">${f}</div>`).join("")}
+      ${status === "rejected" && data.reviewNote ? `<div class="reject-note">Reason: ${escapeHtml(data.reviewNote)}</div>` : ""}
+      ${status === "pending" ? `
+        <div class="action-row">
+          <button class="btn btn-primary" data-action="approve" data-id="${escapeHtml(paymentId)}" data-utr="${escapeHtml(data.utr || "")}" data-amount="${escapeHtml(String(data.amount ?? ""))}">Approve</button>
+          <button class="btn btn-danger" data-action="reject" data-id="${escapeHtml(paymentId)}">Reject</button>
+        </div>
+      ` : ""}
+    `;
+    return card;
+  }
+
+  // ---------- Approve / reject ----------
+  document.addEventListener("click", async (e) => {
+    const btn = e.target.closest("button[data-action]");
+    if (!btn) return;
+
+    const paymentId = btn.dataset.id;
+    const action = btn.dataset.action;
+
+    const card = btn.closest(".payment-card");
+    const allButtons = card.querySelectorAll("button");
+    allButtons.forEach((b) => (b.disabled = true));
+
+    try {
+      // The payment and the registration share the same document id.
+      const payRef = doc(db, "payments", paymentId);
+      const regRef = doc(db, "registrations", paymentId);
+      const batch = writeBatch(db);
+
+      if (action === "approve") {
+        const ok = confirm(`Approve ₹${btn.dataset.amount}? Make sure UTR ${btn.dataset.utr} appears in your UPI / bank history.`);
+        if (!ok) {
+          allButtons.forEach((b) => (b.disabled = false));
+          return;
+        }
+        batch.update(payRef, {
+          status: "approved",
+          reviewedAt: serverTimestamp(),
+          reviewedBy: auth.currentUser.uid
+        });
+        batch.update(regRef, {
+          planStatus: "active",
+          planActivatedAt: serverTimestamp()
+        });
+      } else {
+        const reason = prompt("Reason for rejection (saved with this payment):", "Payment details could not be verified.");
+        if (reason === null) {
+          allButtons.forEach((b) => (b.disabled = false));
+          return;
+        }
+        batch.update(payRef, {
+          status: "rejected",
+          reviewNote: reason,
+          reviewedAt: serverTimestamp(),
+          reviewedBy: auth.currentUser.uid
+        });
+        batch.update(regRef, { planStatus: "rejected" });
+      }
+
+      await batch.commit();
+      await loadPayments();
+
+    } catch (err) {
+      console.error("Action failed:", err);
+      alert("Couldn't update this payment. Check that your Firestore rules allow admin updates.");
+      allButtons.forEach((b) => (b.disabled = false));
+    }
+  });
+</script>
+
+</body>
+</html>

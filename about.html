@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vet Paw House — About</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="home.css">
+  <script src="theme.js"></script>
+  <style>
+    /* ===== FOUNDER PAGE — page-specific styles only.
+       Shared nav/canvas/footer rules live in home.css, same as home.html. ===== */
+
+    .founder-section{
+      position:relative; z-index:2;
+      max-width:1080px; margin:0 auto;
+      padding:120px 24px 100px;
+    }
+
+    .founder-card{
+      display:grid;
+      grid-template-columns:340px 1fr;
+      gap:56px;
+      align-items:center;
+      background:rgba(27,30,39,.55);
+      border:1px solid rgba(244,162,77,.18);
+      border-radius:20px;
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+      padding:48px;
+      box-shadow:0 20px 60px rgba(0,0,0,.35);
+    }
+    :root[data-theme="light"] .founder-card,
+    html:not([data-theme="dark"]) .founder-card{
+      background:rgba(255,255,255,.55);
+      border-color:rgba(201,111,208,.18);
+    }
+
+    .founder-photo-wrap{
+      position:relative;
+      border-radius:16px;
+      overflow:hidden;
+      aspect-ratio:4/5;
+      box-shadow:0 16px 40px rgba(0,0,0,.4);
+    }
+    .founder-photo-wrap img{
+      width:100%; height:100%; object-fit:cover; display:block;
+    }
+    .founder-photo-tag{
+      position:absolute; left:16px; bottom:16px;
+      font-family:'Inter',sans-serif; font-size:12px; font-weight:600;
+      letter-spacing:.02em;
+      color:#f6f1e7;
+      background:rgba(13,15,20,.55);
+      border:1px solid rgba(244,162,77,.35);
+      padding:6px 12px; border-radius:999px;
+      backdrop-filter:blur(6px);
+    }
+
+    .founder-eyebrow{
+      font-family:'Inter',sans-serif; font-size:14px; font-weight:500;
+      color:#f4a24d; margin:0 0 10px;
+    }
+    .founder-name{
+      font-family:'Playfair Display',serif; font-weight:900;
+      font-size:clamp(28px,3.4vw,40px); line-height:1.15;
+      margin:0 0 6px; color:inherit;
+    }
+    .founder-credential{
+      font-family:'Inter',sans-serif; font-size:15px; font-weight:500;
+      color:rgba(246,241,231,.75); margin:0 0 22px;
+    }
+    :root[data-theme="light"] .founder-credential,
+    html:not([data-theme="dark"]) .founder-credential{
+      color:rgba(30,25,20,.65);
+    }
+
+    .founder-bio{
+      font-family:'Inter',sans-serif; font-weight:300; font-size:16px;
+      line-height:1.7; max-width:56ch;
+      color:rgba(246,241,231,.85); margin:0 0 28px;
+    }
+    :root[data-theme="light"] .founder-bio,
+    html:not([data-theme="dark"]) .founder-bio{
+      color:rgba(30,25,20,.78);
+    }
+
+    .founder-quote{
+      border-left:2px solid #f4a24d;
+      padding:4px 0 4px 22px;
+      margin:0;
+    }
+    .founder-quote-hi{
+      font-family:'Noto Sans Devanagari','Inter',sans-serif;
+      font-weight:500; font-size:19px; line-height:1.85;
+      color:#f4a24d; margin:0 0 8px;
+    }
+    .founder-quote-en{
+      font-family:'Inter',sans-serif; font-weight:300; font-style:italic;
+      font-size:14px; line-height:1.6;
+      color:rgba(246,241,231,.6); margin:0;
+    }
+    :root[data-theme="light"] .founder-quote-en,
+    html:not([data-theme="dark"]) .founder-quote-en{
+      color:rgba(30,25,20,.55);
+    }
+
+    @media (max-width:760px){
+      .founder-card{
+        grid-template-columns:1fr;
+        padding:32px 24px;
+        gap:32px;
+      }
+      .founder-photo-wrap{ max-width:280px; margin:0 auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="home.html" class="nav-logo">🐾 Vet Paw House</a>
+    <ul class="nav-links">
+      <li><a href="home.html"><span class="nav-text">Home</span></a></li>
+      <li><a href="admin.html"><span class="nav-text">Admin</span></a></li>
+      <li><a href="series.html"><span class="nav-text">Series</span></a></li>
+      <li><a href="about.html"><span class="nav-text">About</span></a></li>
+      <li class="nav-register"><a href="index.html" class="nav-cta">Register</a></li>
+    </ul>
+    <button class="nav-dots" id="navDots" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navMenu"><span></span><span></span><span></span></button>
+    <div class="nav-menu" id="navMenu" aria-label="Site menu"></div>
+  </nav>
+
+  <!-- FOUNDER & CEO -->
+  <section class="founder-section" id="founder-section">
+    <div class="founder-card">
+      <div class="founder-photo-wrap">
+        <img src="founder.jpg" alt="Dr. Sahil Choudhary, Founder & CEO of Vet Paw House">
+        <span class="founder-photo-tag">Founder & CEO</span>
+      </div>
+      <div class="founder-content">
+        <p class="founder-eyebrow">Founder & CEO</p>
+        <h1 class="founder-name">Dr. Sahil Choudhary</h1>
+        <p class="founder-credential">B.V.Sc &amp; A.H. — Veterinary Doctor</p>
+        <p class="founder-bio">
+          Dr. Sahil Choudhary founded Vet Paw House to bring together modern veterinary
+          care and genuine love for animals under one roof. With a background in
+          Veterinary Science and Animal Husbandry, he leads the clinic's mission to
+          keep every registered pet healthy, tracked, and cared for — one wagging
+          tail at a time.
+        </p>
+        <blockquote class="founder-quote">
+          <p class="founder-quote-hi">तू करता वो है जो तू चाहता है, पर होता वही है जो मैं चाहता हूँ। तू वो कर जो मैं चाहता हूँ, फिर होगा वही जो तू चाहता है</p>
+          <p class="founder-quote-en">"You do what you want, but what happens is what I want. You do what I want, then what happens is what you want."</p>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© <span id="year"></span> Vet Paw House. All rights reserved.</p>
+    <p><a href="terms.html">Terms &amp; Conditions</a> · <a href="privacy.html">Privacy Policy</a> · <a href="index.html">Home</a></p>
+  </footer>
+
+<script>
+  /* ===== BACKGROUND CANVAS — identical to home.html so the page feels continuous ===== */
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H;
+  function isDark(){ return document.documentElement.getAttribute('data-theme') === 'dark'; }
+  const FOCAL = 560;
+  const COLS = [[244,162,77],[224,123,123],[201,111,208],[100,160,255]];
+  function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  function mkRing(i){ const col=COLS[i%COLS.length]; return {radius:180+i*70,tilt:(i*0.6)+Math.random()*0.4,spin:(Math.random()-.5)*0.012+0.004,rot:Math.random()*Math.PI*2,points:64,col,nodeOffset:Math.random()*Math.PI*2}; }
+  let rings=[];
+  function init(){ rings=Array.from({length:6},(_,i)=>mkRing(i)); }
+  let mouse={tx:0,ty:0.25}, camRotY=0, camRotX=0.25;
+  function project3D(x,y,z){ const cosY=Math.cos(camRotY),sinY=Math.sin(camRotY); let x1=x*cosY-z*sinY,z1=x*sinY+z*cosY; const cosX=Math.cos(camRotX),sinX=Math.sin(camRotX); let y1=y*cosX-z1*sinX,z2=y*sinX+z1*cosX; const scale=FOCAL/(FOCAL+z2+500); return{sx:W*.5+x1*scale,sy:H*.5+y1*scale,scale,z:z2}; }
+  function drawBlobs(t){ const dk=isDark(); [{cx:W*.30+Math.sin(t*.30)*110,cy:H*.42+Math.cos(t*.20)*75,r:320,col:'244,162,77',a:.07},{cx:W*.72+Math.cos(t*.25)*90,cy:H*.60+Math.sin(t*.32)*65,r:250,col:'201,111,208',a:.07},{cx:W*.52+Math.sin(t*.18)*70,cy:H*.24+Math.cos(t*.22)*55,r:190,col:'100,160,255',a:.05}].forEach(({cx,cy,r,col,a})=>{ const g=ctx.createRadialGradient(cx,cy,0,cx,cy,r); g.addColorStop(0,`rgba(${col},${dk?a:a*1.5})`); g.addColorStop(1,dk?'transparent':`rgba(${col},0)`); ctx.fillStyle=g; ctx.fillRect(0,0,W,H); }); }
+  function drawVignette(){ const dk=isDark(); const g=ctx.createRadialGradient(W/2,H/2,H*.06,W/2,H/2,H*.80); g.addColorStop(0,dk?'rgba(13,15,20,0)':'rgba(246,241,231,0)'); g.addColorStop(1,dk?'rgba(13,15,20,.85)':'rgba(246,241,231,.7)'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H); }
+  let t=0;
+  function animate(){ requestAnimationFrame(animate); t+=.007; camRotY+=(mouse.tx-camRotY)*.02; camRotX+=(mouse.ty-camRotX)*.02; const dk=isDark(); ctx.fillStyle=dk?'#0d0f14':'#f6f1e7'; ctx.fillRect(0,0,W,H); drawBlobs(t); const drawables=[]; rings.forEach(ring=>{ ring.rot+=ring.spin; const pts=[]; for(let p=0;p<=ring.points;p++){ const a=(p/ring.points)*Math.PI*2; const rx=Math.cos(a)*ring.radius,ry=Math.sin(a)*ring.radius*Math.sin(ring.tilt),rz=Math.sin(a)*ring.radius*Math.cos(ring.tilt); const cs=Math.cos(ring.rot),sn=Math.sin(ring.rot); pts.push(project3D(rx*cs-rz*sn,ry,rx*sn+rz*cs)); } const avgZ=pts.reduce((s,p)=>s+p.z,0)/pts.length; drawables.push({ring,pts,avgZ}); const na=ring.nodeOffset+t*1.3; const nrx=Math.cos(na)*ring.radius,nry=Math.sin(na)*ring.radius*Math.sin(ring.tilt),nrz=Math.sin(na)*ring.radius*Math.cos(ring.tilt); const cs=Math.cos(ring.rot),sn=Math.sin(ring.rot); const node=project3D(nrx*cs-nrz*sn,nry,nrx*sn+nrz*cs); drawables.push({node,ring,avgZ:node.z,isNode:true}); }); drawables.sort((a,b)=>a.avgZ-b.avgZ); drawables.forEach(d=>{ if(d.isNode){ const{node,ring}=d; const depth=Math.max(0,Math.min(1,(node.z+500)/900)); const r=3+depth*4,alpha=.25+depth*.6; const halo=ctx.createRadialGradient(node.sx,node.sy,0,node.sx,node.sy,r*4); halo.addColorStop(0,`rgba(${ring.col[0]},${ring.col[1]},${ring.col[2]},${(alpha*.5).toFixed(3)})`); halo.addColorStop(1,dk?'transparent':`rgba(${ring.col[0]},${ring.col[1]},${ring.col[2]},0)`); ctx.fillStyle=halo; ctx.beginPath(); ctx.arc(node.sx,node.sy,r*4,0,Math.PI*2); ctx.fill(); ctx.fillStyle=dk?`rgba(255,255,255,${alpha.toFixed(3)})`:`rgba(${ring.col[0]},${ring.col[1]},${ring.col[2]},${Math.min(1,alpha+.25).toFixed(3)})`; ctx.beginPath(); ctx.arc(node.sx,node.sy,Math.max(r,1),0,Math.PI*2); ctx.fill(); } else { const{ring,pts}=d; const depth=Math.max(0,Math.min(1,(d.avgZ+500)/900)); ctx.beginPath(); ctx.strokeStyle=`rgba(${ring.col[0]},${ring.col[1]},${ring.col[2]},${(.08+depth*.22).toFixed(3)})`; ctx.lineWidth=.8+depth*1.2; pts.forEach((p,idx)=>idx===0?ctx.moveTo(p.sx,p.sy):ctx.lineTo(p.sx,p.sy)); ctx.stroke(); } }); drawVignette(); }
+  window.addEventListener('mousemove',e=>{ mouse.tx=((e.clientX/W)-.5)*0.6; mouse.ty=0.25+((e.clientY/H)-.5)*0.4; });
+  window.addEventListener('mouseleave',()=>{ mouse.tx=0; mouse.ty=0.25; });
+  resize(); init(); animate();
+  let lastW=window.innerWidth;
+  window.addEventListener('resize',()=>{ resize(); if(window.innerWidth!==lastW){ lastW=window.innerWidth; init(); } });
+
+  /* ===== MOBILE NAV — same 3-dots pattern as home.html ===== */
+  (function () {
+    const nav  = document.querySelector('.navbar');
+    const dots = document.getElementById('navDots');
+    const menu = document.getElementById('navMenu');
+    document.querySelectorAll('.nav-links li:not(.nav-register) a').forEach(a => {
+      menu.appendChild(a.cloneNode(true));
+    });
+    function setOpen(open) {
+      nav.classList.toggle('menu-open', open);
+      dots.setAttribute('aria-expanded', String(open));
+      dots.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    }
+    dots.addEventListener('click', e => { e.stopPropagation(); setOpen(!nav.classList.contains('menu-open')); });
+    menu.addEventListener('click', e => { if (e.target.closest('a')) setOpen(false); });
+    document.addEventListener('click', e => { if (!nav.contains(e.target)) setOpen(false); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') setOpen(false); });
+    window.addEventListener('resize', () => { if (window.innerWidth > 767) setOpen(false); });
+  })();
+
+  /* ===== FOOTER YEAR ===== */
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
