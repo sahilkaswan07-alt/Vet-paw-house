@@ -9,6 +9,20 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
    <link rel="stylesheet" href="petbox.css">
    <script src="theme.js"></script>
+   <script>window.PET_ID = 'casper';   /* the pet's id — change it for each new pet (same id as in pet-schedules.js and this pet's box on home.html) */</script>
+   <script>
+     /* Someone scanned the pet's QR code (…?card=1):
+        - on the owner's phone (it already unlocked this pet's box) -> straight to the full pet details;
+        - on any other phone -> show only the ID card (no flash of the full page).
+        Add &finder=1 to the address to always see what a finder sees. */
+     (function () {
+       if (!/[?&]card=1(&|$)/.test(location.search)) return;
+       var owner = false;
+       try { owner = localStorage.getItem('pawhouse_owner_' + window.PET_ID) === '1'; } catch (e) {}
+       if (owner && !/[?&]finder=1(&|$)/.test(location.search)) { location.replace(location.pathname); return; }
+       document.documentElement.classList.add('card-view');
+     })();
+   </script>
    <style>
      /* ===== Owner photo upload tile ===== */
      .upload-tile{
@@ -230,6 +244,27 @@
 </div>
  
 <div class="page">
+
+  <!-- CARD VIEW — only visible when someone opens this page by scanning the pet's QR code (…?card=1).
+       They see the pet's ID card (same design as the downloaded one) and a "Call owner" button. -->
+  <div class="cardview-root" id="cardViewRoot">
+    <div class="cardview-title">🪪 Pet ID Card</div>
+    <p class="cardview-hint">Pinch to zoom in on the card.</p>
+    <div class="cardview-cards" id="cardViewCards"></div>
+    <div class="found-box" id="foundBox">
+      <div class="found-title">🐾 Found this pet?</div>
+      <p>Thank you for helping <span id="foundPetName">this pet</span> get home. Please contact the owner.</p>
+      <a class="found-call" id="foundCall" href="#">📞 Call owner</a>
+    </div>
+    <div class="owner-box">
+      <button type="button" class="owner-open" id="ownerOpenBtn">🔓 I'm the owner — open pet details</button>
+      <div class="owner-form" id="ownerForm" hidden>
+        <input type="password" id="ownerPass" placeholder="Box password" autocomplete="off">
+        <button type="button" id="ownerUnlock">Unlock</button>
+        <div class="owner-err" id="ownerErr"></div>
+      </div>
+    </div>
+  </div>
  
   <!-- ① PET HERO — edit name, breed, photo, chips per pet -->
   <div class="pet-hero">
@@ -253,7 +288,7 @@
        once per pet. The QR code always encodes THIS page's own URL, so
        scanning it (e.g. from a printed tag) opens this pet's profile —
        no manual editing needed for the QR itself. -->
-  <div class="sec">
+  <div class="sec" id="idCardSection">
     <div class="sec-title"><span class="icon">🪪</span> Pet ID Card</div>
     <div class="idcard" id="idCard">
       <div class="idcard-photo-col">
@@ -272,7 +307,7 @@
       </div>
       <div class="idcard-qr-col">
         <div class="idcard-qr-box" id="idQrCode"></div>
-        <div class="idcard-qr-label">Scan for pet profile</div>
+        <div class="idcard-qr-label">Scan to open this ID card</div>
       </div>
     </div>
     <div class="idcard-actions">
@@ -515,7 +550,6 @@
 <!-- GALLERY UPLOAD TOAST -->
 <div class="gallery-toast" id="galleryToast"></div>
 
-<script>window.PET_ID = 'casper';</script>
 <script src="pet-schedules.js"></script>
 <script src="petbox.js"></script>
 <script type="module" src="js/firebase.js"></script>
@@ -529,6 +563,41 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
+  /* ===== QR CODE ADDRESS =====
+     The QR code opens THIS page with "?card=1", which shows only the pet's ID card.
+     SITE_URL: leave '' and the QR uses the address this page is opened from — right once the
+     site is live. While you test on your own computer (file:// or localhost / 127.0.0.1) a phone
+     cannot open that address, so type your live website address here, e.g.
+         const SITE_URL = 'https://www.your-domain.com';
+         const SITE_URL = 'https://yourname.github.io/your-repo';   (if your site lives in a folder)
+     (address only, no page name). Then every QR code and downloaded ID card points to your
+     live site, even while you are still testing on your computer. */
+  const SITE_URL = '';
+
+  /* BOX_PASSWORD: the same password this pet has on home.html (its openBox('…', …) line).
+     When the owner scans the QR on a phone, they tap "I'm the owner", type it once, and from then on
+     that phone opens the full pet details straight from the QR. It is a simple lock (like the one on
+     home.html), not strong security. */
+  const BOX_PASSWORD = 'casper123';
+
+  function isTestAddress() {
+    return !SITE_URL && (location.protocol === 'file:' || ['localhost', '127.0.0.1', '[::1]'].indexOf(location.hostname) !== -1);
+  }
+  function qrTargetUrl() {
+    if (SITE_URL) {
+      const file = location.pathname.split('/').pop() || 'petbox.html';   // this pet's own page file
+      return SITE_URL.replace(/\/+$/, '') + '/' + file + '?card=1';
+    }
+    if (location.protocol === 'file:') return location.href.split(/[?#]/)[0] + '?card=1';
+    return location.origin + location.pathname + '?card=1';
+  }
+  // Before saving a QR / ID card made on a test address, warn that phones can't open it.
+  function okToSaveQr() {
+    if (!isTestAddress()) return true;
+    return confirm('This QR code opens ' + qrTargetUrl() + '\n\nThat address only works on this computer, not on phones.\n' +
+      'Set SITE_URL (top of this page\'s script) to your live website address first.\n\nSave it anyway?');
+  }
+
   (function () {
     // Auto-fill the ID card's short code from window.PET_ID (set above),
     // so it stays correct without a separate manual edit.
@@ -537,31 +606,85 @@
       codeEl.textContent = 'PH-' + String(window.PET_ID).toUpperCase();
     }
 
-    // The QR always encodes this page's own URL — scanning it (e.g. from
-    // a printed tag on the pet's collar) opens this exact profile page.
+    // The QR opens this pet's ID card (this page with ?card=1) — e.g. from a
+    // printed tag on the pet's collar.
     const qrTarget = document.getElementById('idQrCode');
     if (qrTarget && window.QRCode) {
       new QRCode(qrTarget, {
-        text: window.location.href,
-        width: 100,
-        height: 100,
+        text: qrTargetUrl(),
+        width: 116,
+        height: 116,
         colorDark: '#1b1108',
         colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.M
       });
+      if (isTestAddress()) {
+        const warn = document.createElement('div');
+        warn.className = 'idcard-qr-label';
+        warn.style.color = '#e05a5a';
+        warn.textContent = '⚠️ Test address: a phone cannot open this QR. Set SITE_URL in the page script.';
+        qrTarget.parentNode.appendChild(warn);
+      }
+    }
+
+    // CARD VIEW (opened by scanning the QR code): the ID card + "Call owner" button
+    if (document.documentElement.classList.contains('card-view')) {
+      mountCardView();
+
+      // "I'm the owner" — enter the box password once, this phone is then remembered as the owner's
+      const openBtn = document.getElementById('ownerOpenBtn');
+      const ownerForm = document.getElementById('ownerForm');
+      const ownerPass = document.getElementById('ownerPass');
+      const ownerErr = document.getElementById('ownerErr');
+      function tryOwnerUnlock() {
+        if (ownerPass.value === BOX_PASSWORD) {
+          try { localStorage.setItem('pawhouse_owner_' + window.PET_ID, '1'); } catch (e) {}
+          location.href = location.pathname;          // same page, without ?card=1 = the full pet details
+        } else {
+          ownerErr.textContent = 'Incorrect password. Try again.';
+        }
+      }
+      if (openBtn && ownerForm && ownerPass) {
+        openBtn.addEventListener('click', () => { openBtn.hidden = true; ownerForm.hidden = false; ownerPass.focus(); });
+        document.getElementById('ownerUnlock').addEventListener('click', tryOwnerUnlock);
+        ownerPass.addEventListener('keydown', e => { if (e.key === 'Enter') tryOwnerUnlock(); });
+      }
+
+      const nameEl = document.getElementById('idCardName');
+      const petName = nameEl ? nameEl.textContent.trim() : '';
+      const foundName = document.getElementById('foundPetName');
+      if (foundName && petName) foundName.textContent = petName;
+      document.title = (petName || 'Pet') + ' — ID Card · Vet Paw House';
+      const call = document.getElementById('foundCall');
+      const contactEl = document.getElementById('idCardOwnerContact');
+      const digits = contactEl ? contactEl.textContent.replace(/[^\d+]/g, '') : '';
+      if (call) { if (digits) call.href = 'tel:' + digits; else call.style.display = 'none'; }
     }
   })();
 
-  // Downloads a real ID card: FRONT (photo, pet name, owner name, owner contact)
-  // and BACK (QR code + pet details), stacked in one PNG. The card is built
-  // off-screen from the live values already on the page, so whatever the
-  // registration / Firebase sync fills in is what ends up on the card.
-  function downloadIdCard() {
-    if (!window.html2canvas || !window.QRCode) return;
-
+  /* ===== THE ID CARD (front + back) =====
+     One design, used for the downloaded PNG AND for the page people see after scanning
+     the QR code. FRONT: photo, pet name, owner name, owner contact. BACK: pet details only.
+     Values are read from the ID card section already on this page, so whatever the
+     registration / Firebase sync fills in is what ends up on the card. */
+  function idCardData() {
     const $   = id => document.getElementById(id);
     const txt = id => ($(id) ? $(id).textContent.trim() : '');
-    const el  = (tag, cls, text) => {
+    const photoEl = $('idCardPhoto');
+    return {
+      name: txt('idCardName'),           breed: txt('idCardBreed'),
+      sex: txt('idCardSex'),             age: txt('idCardAge'),
+      weight: txt('idCardWeight'),       since: txt('idCardSince'),
+      ownerName: txt('idCardOwnerName'), ownerContact: txt('idCardOwnerContact'),
+      code: txt('idCardCode'),
+      photo: photoEl ? (photoEl.currentSrc || photoEl.src) : ''
+    };
+  }
+
+  // Builds the two card faces (each 856 x 540, styled by the .idx-* rules in petbox.css)
+  function buildIdCards() {
+    const d = idCardData();
+    const el = (tag, cls, text) => {
       const n = document.createElement(tag);
       if (cls) n.className = cls;
       if (text !== undefined) n.textContent = text;
@@ -579,19 +702,6 @@
       h.appendChild(el('div', 'idx-tag', tag));
       return h;
     };
-
-    const petId   = (window.PET_ID || 'pet').toLowerCase();
-    const photoEl = $('idCardPhoto');
-    const d = {
-      name: txt('idCardName'),           breed: txt('idCardBreed'),
-      sex: txt('idCardSex'),             age: txt('idCardAge'),
-      weight: txt('idCardWeight'),       since: txt('idCardSince'),
-      ownerName: txt('idCardOwnerName'), ownerContact: txt('idCardOwnerContact'),
-      code: txt('idCardCode'),
-      photo: photoEl ? (photoEl.currentSrc || photoEl.src) : ''
-    };
-
-    const sheet = el('div', 'idx-sheet');
 
     // ---------- FRONT ----------
     const front = el('div', 'idx-card');
@@ -614,11 +724,6 @@
     const back = el('div', 'idx-card');
     back.appendChild(head('Pet Details'));
     const bBody = el('div', 'idx-body');
-    const qrCol = el('div', 'idx-qr-col');
-    const qrBox = el('div', 'idx-qr-box');
-    qrCol.appendChild(qrBox);
-    qrCol.appendChild(el('div', 'idx-qr-cap', 'Scan for pet profile'));
-    bBody.appendChild(qrCol);
     const grid = el('div', 'idx-grid');
     [['Breed', d.breed], ['Sex', d.sex], ['Age', d.age],
      ['Weight', d.weight], ['Member Since', d.since], ['Pet ID', d.code]]
@@ -626,29 +731,50 @@
     bBody.appendChild(grid);
     back.appendChild(bBody);
     const bFoot = el('div', 'idx-foot');
-    bFoot.appendChild(el('div', 'idx-foot-note', 'If found, please scan the QR code to view the pet profile and contact the owner.'));
+    bFoot.appendChild(el('div', 'idx-foot-note', 'If found, please contact the owner using the number on the front of this card.'));
     back.appendChild(bFoot);
 
+    return { front, back, data: d };
+  }
+
+  // CARD VIEW (page opened by scanning the QR code): shows the ID card exactly as it is
+  // downloaded, scaled down to fit the screen.
+  function mountCardView() {
+    const holder = document.getElementById('cardViewCards');
+    if (!holder) return;
+    const { front, back } = buildIdCards();
+    const faces = [front, back].map(face => {
+      const box = document.createElement('div');
+      box.className = 'cardview-face';
+      box.appendChild(face);
+      holder.appendChild(box);
+      return { box, face };
+    });
+    function fit() {
+      const s = Math.min(1, (holder.clientWidth || 856) / 856);
+      faces.forEach(({ box, face }) => {
+        face.style.transform = 'scale(' + s + ')';
+        face.style.transformOrigin = 'top left';
+        box.style.height = (540 * s) + 'px';
+      });
+    }
+    fit();
+    window.addEventListener('resize', fit);
+  }
+
+  // Downloads the ID card: FRONT and BACK stacked in one PNG (no QR code on it).
+  function downloadIdCard() {
+    if (!window.html2canvas) return;
+    const petId = (window.PET_ID || 'pet').toLowerCase();
+    const { front, back, data: d } = buildIdCards();
+
+    const sheet = document.createElement('div');
+    sheet.className = 'idx-sheet';
     sheet.appendChild(front);
     sheet.appendChild(back);
     document.body.appendChild(sheet);
 
-    new QRCode(qrBox, {
-      text: window.location.href,
-      width: 232, height: 232,
-      colorDark: '#1b1108', colorLight: '#ffffff',
-      correctLevel: QRCode.CorrectLevel.M
-    });
-
-    // wait until the QR image, the photo and the web fonts are ready
-    const qrReady = new Promise(resolve => {
-      let tries = 0;
-      (function check() {
-        const img = qrBox.querySelector('img');
-        if ((img && img.src && img.src.indexOf('data:') === 0) || ++tries > 20) return resolve();
-        setTimeout(check, 50);
-      })();
-    });
+    // wait until the photo and the web fonts are ready
     const photoReady = new Promise(resolve => {
       if (!d.photo) return resolve();
       const im = new Image();
@@ -658,7 +784,7 @@
     });
     const fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
 
-    Promise.all([qrReady, photoReady, fontsReady])
+    Promise.all([photoReady, fontsReady])
       .then(() => html2canvas(sheet, { backgroundColor: '#0d0f14', scale: 2, useCORS: true }))
       .then(canvas => {
         const link = document.createElement('a');
@@ -676,6 +802,7 @@
   function downloadQrOnly() {
     const qrBox = document.getElementById('idQrCode');
     if (!qrBox || !window.html2canvas) return;
+    if (!okToSaveQr()) return;
     const petId = (window.PET_ID || 'pet').toLowerCase();
     html2canvas(qrBox, { backgroundColor: '#ffffff', scale: 3 }).then(canvas => {
       const link = document.createElement('a');

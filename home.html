@@ -48,9 +48,9 @@
     <a href="home.html" class="nav-logo">🐾 Vet Paw House</a>
     <ul class="nav-links">
       <li><a href="home.html"><span class="nav-text">Home</span></a></li>
-      <li><a href="admin.html"><span class="nav-text">Admin</span></a></li>
+      <li><a href="admin-payments.html"><span class="nav-text">Admin</span></a></li>
       <li><a href="series.html"><span class="nav-text">Series</span></a></li>
-      <li><a href="about.html"><span class="nav-text">About</span></a></li>
+      <li><a href="index.html"><span class="nav-text">About</span></a></li>
       <li class="nav-register"><a href="index.html" class="nav-cta">Register</a></li>
     </ul>
     <!-- phones only: 3-dots button; its menu is filled by the script below from the links above -->
@@ -260,6 +260,11 @@
   }
   function tryUnlock() {
     if (document.getElementById('pbmInput').value === _pass) {
+      // remember this phone as the owner's, so scanning the pet's QR here opens the full details directly
+      try {
+        const petId = new URL(_url, window.location.href).searchParams.get('id');
+        if (petId) localStorage.setItem('pawhouse_owner_' + petId, '1');
+      } catch (e) { /* ignore */ }
       window.location.href = _url;
     } else {
       document.getElementById('pbmErr').textContent = 'Incorrect password. Try again.';

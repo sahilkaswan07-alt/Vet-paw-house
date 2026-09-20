@@ -179,13 +179,13 @@
     }
     .idcard-qr-box {
       background: #fff; padding: 8px; border-radius: 12px;
-      width: 116px; height: 116px;
+      width: 132px; height: 132px;
       display: flex; align-items: center; justify-content: center;
       box-shadow: 0 0 0 1px rgba(244,162,77,0.25);
     }
     .idcard-qr-box canvas, .idcard-qr-box img { display: block; }
     .idcard-qr-label {
-      font-size: .64rem; color: var(--muted); text-align: center; max-width: 116px;
+      font-size: .64rem; color: var(--muted); text-align: center; max-width: 150px;
     }
     .idcard-actions {
       display: flex; gap: .7rem; flex-wrap: wrap; margin-top: 1.3rem;
@@ -260,8 +260,8 @@
     }
     .idx-qr-box canvas, .idx-qr-box img { display: block; }
     .idx-qr-cap { font-size: 13px; font-weight: 600; color: #7a7a8c; letter-spacing: .04em; }
-    .idx-grid { flex: 1; min-width: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 28px 30px; align-content: center; }
-    .idx-grid .idx-value { font-size: 24px; }
+    .idx-grid { flex: 1; min-width: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 46px 30px; align-content: center; }
+    .idx-grid .idx-value { font-size: 26px; }
 
 
     /* DOCUMENT LOCKER (safe storage for pet documents — vaccine certs, medical records, etc.) */
@@ -504,3 +504,69 @@ html[data-theme="light"] .idcard {
   border: 1px solid rgba(244,162,77,0.4);
   box-shadow: 0 4px 24px rgba(0,0,0,0.18);
 }
+
+/* ===================== CARD VIEW — what people see after scanning the pet's QR code =====================
+   The QR code opens this page with ?card=1 (petbox.html then adds the class "card-view" to <html>).
+   People see the pet's ID card (front + back, same design as the downloaded card) and a "Call owner"
+   button. The owner's tools and all other sections are hidden. */
+.cardview-root { display: none; }
+html.card-view .cardview-root { display: block; }
+html.card-view .page > *:not(#cardViewRoot),
+html.card-view .reminder-bell,
+html.card-view .reminder-modal-overlay,
+html.card-view .nav-back { display: none !important; }
+
+.cardview-title {
+  font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.5rem;
+  text-align: center; margin-bottom: 1.2rem; color: var(--text);
+}
+.cardview-hint { display: none; text-align: center; font-size: .78rem; color: var(--muted); margin: -.6rem 0 1rem; }
+@media (max-width: 700px) { .cardview-hint { display: block; } }
+.cardview-cards { max-width: 856px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+.cardview-face { position: relative; width: 100%; overflow: hidden; }
+.cardview-face .idx-card {
+  position: absolute; top: 0; left: 0;
+  font-family: 'Inter', sans-serif; color: #e8e2d5;
+  box-shadow: 0 10px 34px rgba(0,0,0,0.28);
+}
+
+.found-box {
+  display: none; max-width: 856px; margin: 1.4rem auto 0; text-align: center;
+  padding: 1.1rem 1.2rem; border-radius: 16px;
+  background: rgba(244,162,77,0.1); border: 1px solid rgba(244,162,77,0.35);
+}
+html.card-view .found-box { display: block; }
+.found-title { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.15rem; color: var(--accent); margin-bottom: .3rem; }
+.found-box p { font-size: .85rem; color: var(--text); margin-bottom: .9rem; line-height: 1.5; }
+.found-call {
+  display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
+  padding: .7rem 1.4rem; border-radius: 40px; text-decoration: none;
+  font-weight: 700; font-size: .85rem; letter-spacing: .04em;
+  background: linear-gradient(135deg, #f4a24d, #e07b7b); color: #0d0f14;
+}
+html[data-theme="light"] .found-box { background: rgba(244,162,77,0.16); border-color: rgba(173,89,11,0.4); }
+
+/* "I'm the owner" — only shown in card view */
+.owner-box { display: none; max-width: 856px; margin: 1.2rem auto 0; text-align: center; }
+html.card-view .owner-box { display: block; }
+.owner-open {
+  font-family: 'Inter', sans-serif; font-weight: 700; font-size: .82rem; letter-spacing: .03em;
+  padding: .7rem 1.3rem; border-radius: 40px; cursor: pointer;
+  background: transparent; color: var(--accent); border: 1.5px solid rgba(244,162,77,0.5);
+}
+.owner-form { display: flex; gap: .6rem; justify-content: center; flex-wrap: wrap; }
+.owner-form[hidden] { display: none; }
+.owner-form input {
+  width: min(260px, 100%); padding: .7rem 1rem; border-radius: 12px;
+  background: var(--card); color: var(--text); border: 1px solid rgba(244,162,77,0.35);
+  font-family: 'Inter', sans-serif; font-size: 16px; outline: none;
+}
+.owner-form input:focus { border-color: var(--accent); }
+.owner-form button {
+  padding: .7rem 1.3rem; border: none; border-radius: 40px; cursor: pointer;
+  font-family: 'Inter', sans-serif; font-weight: 700; font-size: .82rem;
+  background: linear-gradient(135deg, #f4a24d, #e07b7b); color: #0d0f14;
+}
+.owner-err { width: 100%; color: var(--accent2); font-size: .78rem; min-height: 1em; }
+html[data-theme="light"] .owner-open { border-color: rgba(173,89,11,0.5); }
+html[data-theme="light"] .owner-form input { border-color: rgba(0,0,0,0.25); }

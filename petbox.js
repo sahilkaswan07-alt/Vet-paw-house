@@ -41,9 +41,9 @@
      e.g.  <script>window.PET_ID = 'monty';</script>
      This is what makes it possible to use this ONE shared petbox.js file
      for every pet, instead of duplicating hundreds of lines of JS per pet
-     (which is how the last bug happened). Falls back to 'bruno' only if a
+     (which is how the last bug happened). Falls back to 'casper' only if a
      page forgets to set it. ===== */
-  const PET_ID = window.PET_ID || 'bruno';
+  const PET_ID = window.PET_ID || 'casper';
 
   /* ===== TICKS — the owner ticks a vaccination / deworming row once it is done.
      The dates come from pet-schedules.js and are NEVER changed by a tick.
@@ -234,6 +234,8 @@
   // Auto-popup: if something is due TODAY (or already missed) and we haven't
   // shown it yet today, pop it open automatically like a cart confirmation.
   function maybeAutoShowReminder() {
+    // someone who scanned the QR code (card view) only sees the ID card — no reminder popup
+    if (document.documentElement.classList.contains('card-view')) return;
     const items = collectReminderItems();
     const urgent = items.filter(i => i.isDueToday || i.isOverdue);
     if (urgent.length === 0) return;
@@ -303,7 +305,7 @@
     photos.forEach(p => {
       const img = document.createElement('img');
       img.src = p.src;
-      img.alt = 'Bruno memory';
+      img.alt = 'Casper memory';
       img.onclick = () => openLightbox(img.src);
       grid.insertBefore(img, tile);
     });
@@ -384,7 +386,7 @@
         const tile = document.getElementById('uploadTile');
         const newImg = document.createElement('img');
         newImg.src = dataUrl;
-        newImg.alt = 'Bruno memory';
+        newImg.alt = 'Casper memory';
         newImg.onclick = () => openLightbox(newImg.src);
         grid.insertBefore(newImg, tile);
 
