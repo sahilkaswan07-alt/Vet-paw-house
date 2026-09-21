@@ -9,18 +9,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
    <link rel="stylesheet" href="petbox.css">
    <script src="theme.js"></script>
+   <script src="boxlock.js"></script>
    <script>window.PET_ID = 'casper';   /* the pet's id — change it for each new pet (same id as in pet-schedules.js and this pet's box on home.html) */</script>
    <script>
-     /* Someone scanned the pet's QR code (…?card=1):
-        - on the owner's phone (it already unlocked this pet's box) -> straight to the full pet details;
-        - on any other phone -> show only the ID card (no flash of the full page).
-        Add &finder=1 to the address to always see what a finder sees. */
+     /* WHO SEES WHAT
+        LOCK_FULL_PAGE = true  -> the full pet details open only on a phone/computer that has already entered
+        this pet's box password (on home.html, or with "I'm the owner" on the ID card page). Everyone else -
+        including anyone who scans the QR code - sees just the ID card.
+        Set it to false if you want anyone with the link to see the full page.
+        Add &finder=1 to the address to see what a finder sees. */
+     window.LOCK_FULL_PAGE = true;
      (function () {
-       if (!/[?&]card=1(&|$)/.test(location.search)) return;
        var owner = false;
        try { owner = localStorage.getItem('pawhouse_owner_' + window.PET_ID) === '1'; } catch (e) {}
-       if (owner && !/[?&]finder=1(&|$)/.test(location.search)) { location.replace(location.pathname); return; }
-       document.documentElement.classList.add('card-view');
+       var scanned = /[?&]card=1(&|$)/.test(location.search);
+       var finderPreview = /[?&]finder=1(&|$)/.test(location.search);
+       if (scanned && owner && !finderPreview) { location.replace(location.pathname); return; }   // owner scanned their own QR
+       if (finderPreview || (!owner && (scanned || window.LOCK_FULL_PAGE))) document.documentElement.classList.add('card-view');
      })();
    </script>
    <style>
@@ -572,13 +577,14 @@
          const SITE_URL = 'https://yourname.github.io/your-repo';   (if your site lives in a folder)
      (address only, no page name). Then every QR code and downloaded ID card points to your
      live site, even while you are still testing on your computer. */
-  const SITE_URL = '';
+  const SITE_URL = 'https://sahilkaswan07-alt.github.io/Vet-paw-house';
 
-  /* BOX_PASSWORD: the same password this pet has on home.html (its openBox('…', …) line).
-     When the owner scans the QR on a phone, they tap "I'm the owner", type it once, and from then on
-     that phone opens the full pet details straight from the QR. It is a simple lock (like the one on
-     home.html), not strong security. */
-  const BOX_PASSWORD = 'casper123';
+  /* BOX_LOCK: this pet's password LOCK CODE — the same code as in this pet's openBox('…', …) line on
+     home.html. Make it with make-password.html. It is a scrambled fingerprint of the password, not the
+     password itself, so the password cannot be read from the page. When the owner scans the QR on a
+     phone, they tap "I'm the owner" and type the password once; that phone is then remembered as the
+     owner's and opens the full pet details. */
+  const BOX_LOCK = 'pbkdf2$210000$ed9848ad34c29a00c0d68d580e9c1f66$3fe973084a51039315e57b06c7a8fed8a63df1c8561587d99f31ccba1db83cc5';
 
   function isTestAddress() {
     return !SITE_URL && (location.protocol === 'file:' || ['localhost', '127.0.0.1', '[::1]'].indexOf(location.hostname) !== -1);
@@ -637,12 +643,19 @@
       const ownerPass = document.getElementById('ownerPass');
       const ownerErr = document.getElementById('ownerErr');
       function tryOwnerUnlock() {
-        if (ownerPass.value === BOX_PASSWORD) {
-          try { localStorage.setItem('pawhouse_owner_' + window.PET_ID, '1'); } catch (e) {}
-          location.href = location.pathname;          // same page, without ?card=1 = the full pet details
-        } else {
-          ownerErr.textContent = 'Incorrect password. Try again.';
+        if (!window.BoxLock || !BoxLock.available()) {
+          ownerErr.textContent = 'Unlocking needs a secure (https) connection.';
+          return;
         }
+        ownerErr.textContent = 'Checking…';
+        BoxLock.verify(ownerPass.value, BOX_LOCK).then(ok => {
+          if (ok) {
+            try { localStorage.setItem('pawhouse_owner_' + window.PET_ID, '1'); } catch (e) {}
+            location.href = location.pathname;        // same page, without ?card=1 = the full pet details
+          } else {
+            ownerErr.textContent = 'Incorrect password. Try again.';
+          }
+        }).catch(() => { ownerErr.textContent = 'Could not check the password. Please try again.'; });
       }
       if (openBtn && ownerForm && ownerPass) {
         openBtn.addEventListener('click', () => { openBtn.hidden = true; ownerForm.hidden = false; ownerPass.focus(); });

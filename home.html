@@ -8,6 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="home.css">
   <script src="theme.js"></script>
+  <script src="boxlock.js"></script>
   <style>
     /* ===== CARE REMINDER BELL — mirrors the bell on each pet's own page.
        Counted LIVE from the hidden <span> list inside each pet-box below
@@ -74,10 +75,14 @@
                 element ids (careBell-casper / careBellBadge-casper).
              3. Update photo/name/breed/chips further down.
              4. Add that same id as a new entry in pet-schedules.js.
+             5. Open make-password.html on your computer, make a lock code for this
+                pet's password, and paste it as the FIRST openBox(...) argument here
+                (and as BOX_LOCK in that pet's petbox.html). The password itself is
+                never written in the page, so it can't be read by viewing the source.
            The bell itself needs NO manual editing beyond renaming those
            two ids — its count is read live from pet-schedules.js, the
            same file the pet's own petbox page reads from. -->
-      <div class="pet-box" data-pet-id="casper" onclick="openBox('casper123', 'petbox.html?id=casper')">
+      <div class="pet-box" data-pet-id="casper" onclick="openBox('pbkdf2$210000$ed9848ad34c29a00c0d68d580e9c1f66$3fe973084a51039315e57b06c7a8fed8a63df1c8561587d99f31ccba1db83cc5', 'petbox.html?id=casper')">
         <div class="care-bell" id="careBell-casper" title="Care reminder">🔔<span class="care-bell-badge" id="careBellBadge-casper">0</span></div>
         <img class="pet-photo" src="casper.jpg" alt="Casper">
         <div class="pet-info">
@@ -246,10 +251,10 @@
   window.addEventListener('focus', renderCareBells);
  
   /* ===== PASSWORD MODAL ===== */
-  let _pass = '', _url = '';
+  let _pass = '', _url = '';   // _pass holds the box's LOCK CODE (see boxlock.js), never the password itself
  
-  function openBox(password, redirectUrl) {
-    _pass = password;
+  function openBox(lockCode, redirectUrl) {
+    _pass = lockCode;
     _url  = redirectUrl;
     document.getElementById('pbmInput').value = '';
     document.getElementById('pbmErr').textContent = '';
@@ -259,16 +264,24 @@
     document.getElementById('pbmOverlay').classList.remove('open');
   }
   function tryUnlock() {
-    if (document.getElementById('pbmInput').value === _pass) {
-      // remember this phone as the owner's, so scanning the pet's QR here opens the full details directly
-      try {
-        const petId = new URL(_url, window.location.href).searchParams.get('id');
-        if (petId) localStorage.setItem('pawhouse_owner_' + petId, '1');
-      } catch (e) { /* ignore */ }
-      window.location.href = _url;
-    } else {
-      document.getElementById('pbmErr').textContent = 'Incorrect password. Try again.';
+    const err = document.getElementById('pbmErr');
+    if (!window.BoxLock || !BoxLock.available()) {
+      err.textContent = 'Unlocking needs a secure (https) connection.';
+      return;
     }
+    err.textContent = 'Checking…';
+    BoxLock.verify(document.getElementById('pbmInput').value, _pass).then(ok => {
+      if (ok) {
+        // remember this phone as the owner's, so scanning the pet's QR here opens the full details directly
+        try {
+          const petId = new URL(_url, window.location.href).searchParams.get('id');
+          if (petId) localStorage.setItem('pawhouse_owner_' + petId, '1');
+        } catch (e) { /* ignore */ }
+        window.location.href = _url;
+      } else {
+        err.textContent = 'Incorrect password. Try again.';
+      }
+    }).catch(() => { err.textContent = 'Could not check the password. Please try again.'; });
   }
   // Allow Enter key to submit
   document.getElementById('pbmInput').addEventListener('keydown', e => {
