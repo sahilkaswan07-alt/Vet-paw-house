@@ -48,8 +48,7 @@
   <nav class="navbar">
     <a href="home.html" class="nav-logo">🐾 Vet Paw House</a>
     <ul class="nav-links">
-      <li><a href="home.html"><span class="nav-text">Home</span></a></li>
-      <li><a href="admin-payments.html"><span class="nav-text">Admin</span></a></li>
+      <li><a href="home.html"><span class="nav-text">Home</span></a></li>      
       <li><a href="series.html"><span class="nav-text">Series</span></a></li>
       <li><a href="index.html"><span class="nav-text">About</span></a></li>
       <li class="nav-register"><a href="index.html" class="nav-cta">Register</a></li>
@@ -213,7 +212,9 @@
 
   // Every item in pet-schedules.js that the owner has NOT ticked yet.
   function getPendingItems(petId) {
-    const schedule = window.PET_SCHEDULES && window.PET_SCHEDULES[petId];
+    const schedule = window.getPetSchedule
+      ? window.getPetSchedule(petId)
+      : (window.PET_SCHEDULES && window.PET_SCHEDULES[petId]);
     if (!schedule) return [];
     const ticks = loadStatusOverrides(petId);
     const all = [...(schedule.vaccination || []), ...(schedule.deworming || [])];

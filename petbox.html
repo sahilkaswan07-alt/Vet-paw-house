@@ -323,11 +323,10 @@
 
   <!-- ② VACCINATION SCHEDULE — edit rows per pet -->
  
-  <!-- These rows are auto-replaced at load time from this pet's entry in
-       pet-schedules.js (window.PET_ID = 'casper' above tells it which entry
-       to use). Add/edit vaccines there — not here — and this table AND the
-       home.html bell both update automatically. The hardcoded rows below
-       only show up if this pet has no entry yet in pet-schedules.js. -->
+  <!-- The rows of this table are filled in by petbox.js from THIS pet's entry in
+       pet-schedules.js (window.PET_ID = 'casper' at the top of this file picks the entry).
+       Don't type vaccines here — add or edit them in pet-schedules.js and this table AND the
+       home.html bell both update. -->
   <div class="sec">
     <div class="sec-title"><span class="icon">💉</span> Vaccination Schedule</div>
     <table class="sched-table">
@@ -339,39 +338,12 @@
         </tr>
       </thead>
       <tbody id="vaxTbody">
-        <tr data-remind-type="vaccination" data-due="2026-07-21" data-item-id="vax-dhppi">
-          <td>DHPPi (Core Vaccine)</td>
-          <td class="col-tick"><label class="tick"><input type="checkbox" onchange="toggleDone(this)" aria-label="Mark as done"><span class="tick-box"></span></label></td>
-          <td class="col-date">21 Jul 2026</td>
-        </tr>
-        <tr data-remind-type="vaccination" data-due="2026-07-21" data-item-id="vax-rabies">
-          <td>Rabies</td>
-          <td class="col-tick"><label class="tick"><input type="checkbox" onchange="toggleDone(this)" aria-label="Mark as done"><span class="tick-box"></span></label></td>
-          <td class="col-date">21 Jul 2026</td>
-        </tr>
-        <tr data-remind-type="vaccination" data-due="2026-07-21" data-item-id="vax-lepto">
-          <td>Leptospirosis</td>
-          <td class="col-tick"><label class="tick"><input type="checkbox" onchange="toggleDone(this)" aria-label="Mark as done"><span class="tick-box"></span></label></td>
-          <td class="col-date">21 Jul 2026</td>
-        </tr>
-        <tr data-remind-type="vaccination" data-due="2026-07-21" data-item-id="vax-booster">
-          <td>Booster Dose</td>
-          <td class="col-tick"><label class="tick"><input type="checkbox" onchange="toggleDone(this)" aria-label="Mark as done"><span class="tick-box"></span></label></td>
-          <td class="col-date">21 Jul 2026</td>
-        </tr>
-        <!-- Add more rows — set data-due to the YYYY-MM-DD version of the date shown,
-             and give each a unique data-item-id (used to remember the owner's tick):
-        <tr data-remind-type="vaccination" data-due="YYYY-MM-DD" data-item-id="vax-unique-id">
-          <td>Vaccine Name</td>
-          <td class="col-tick"><label class="tick"><input type="checkbox" onchange="toggleDone(this)" aria-label="Mark as done"><span class="tick-box"></span></label></td>
-          <td class="col-date">DD Mon YYYY</td>
-        </tr>
-        -->
+        <tr><td colspan="3" class="sched-empty">Loading schedule…</td></tr>
       </tbody>
     </table>
   </div>
  
-  <!-- ③ DEWORMING SCHEDULE — auto-replaced from pet-schedules.js, same as
+  <!-- ③ DEWORMING SCHEDULE — filled in from pet-schedules.js, same as
        the Vaccination table above. Edit the fixed dates there. -->
   <div class="sec">
     <div class="sec-title"><span class="icon">🐛</span> Deworming Schedule</div>
@@ -384,29 +356,7 @@
         </tr>
       </thead>
       <tbody id="dewTbody">
-        <tr data-remind-type="deworming" data-due="2026-07-21" data-item-id="dew-1st">
-          <td>1st Deworming</td>
-          <td class="col-tick"><label class="tick"><input type="checkbox" onchange="toggleDone(this)" aria-label="Mark as done"><span class="tick-box"></span></label></td>
-          <td class="col-date">21 Jul 2026</td>
-        </tr>
-        <tr data-remind-type="deworming" data-due="2026-07-21" data-item-id="dew-2nd">
-          <td>2nd Deworming</td>
-          <td class="col-tick"><label class="tick"><input type="checkbox" onchange="toggleDone(this)" aria-label="Mark as done"><span class="tick-box"></span></label></td>
-          <td class="col-date">21 Jul 2026</td>
-        </tr>
-        <tr data-remind-type="deworming" data-due="2026-07-21" data-item-id="dew-quarterly">
-          <td>Quarterly Deworming</td>
-          <td class="col-tick"><label class="tick"><input type="checkbox" onchange="toggleDone(this)" aria-label="Mark as done"><span class="tick-box"></span></label></td>
-          <td class="col-date">21 Jul 2026</td>
-        </tr>
-        <!-- Add more rows — set data-due to the YYYY-MM-DD version of the date shown,
-             and give each a unique data-item-id:
-        <tr data-remind-type="deworming" data-due="YYYY-MM-DD" data-item-id="dew-unique-id">
-          <td>Treatment Name</td>
-          <td class="col-tick"><label class="tick"><input type="checkbox" onchange="toggleDone(this)" aria-label="Mark as done"><span class="tick-box"></span></label></td>
-          <td class="col-date">DD Mon YYYY</td>
-        </tr>
-        -->
+        <tr><td colspan="3" class="sched-empty">Loading schedule…</td></tr>
       </tbody>
     </table>
   </div>

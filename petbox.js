@@ -159,25 +159,40 @@
      sync — edit a due date once, in pet-schedules.js, and it updates
      everywhere. If a pet has no entry in pet-schedules.js yet, whatever
      rows are already hardcoded in the HTML are left alone. */
+  function escapeHtml(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
   function buildScheduleRow(item, type) {
-    return `<tr data-remind-type="${type}" data-due="${item.due}" data-item-id="${item.id}">
-      <td>${item.name}</td>
+    return `<tr data-remind-type="${type}" data-due="${escapeHtml(item.due)}" data-item-id="${escapeHtml(item.id)}">
+      <td>${escapeHtml(item.name)}</td>
       <td class="col-tick"><label class="tick"><input type="checkbox" onchange="toggleDone(this)" aria-label="Mark as done"><span class="tick-box"></span></label></td>
       <td class="col-date">${formatReminderDate(item.due)}</td>
     </tr>`;
   }
 
+  // Puts a list of rows into one table (or a "nothing yet" line if the list is empty)
+  function fillScheduleBody(body, items, type, emptyText) {
+    if (!body) return;
+    const valid = (items || []).filter(i => i && i.id && i.name && /^\d{4}-\d{2}-\d{2}$/.test(i.due || ''));
+    body.innerHTML = valid.length
+      ? valid.map(item => buildScheduleRow(item, type)).join('')
+      : `<tr><td colspan="3" class="sched-empty">${emptyText}</td></tr>`;
+  }
+
+  // Fills the vaccination + deworming tables from THIS pet's entry in pet-schedules.js
+  // (the entry whose name equals window.PET_ID). Nothing is typed into petbox.html itself,
+  // so a pet page can only ever show the schedule that was written for that pet.
   function renderScheduleTables() {
-    const data = window.PET_SCHEDULES && window.PET_SCHEDULES[PET_ID];
-    if (!data) return; // no shared data for this pet yet — keep hardcoded HTML rows as-is
-    const vaxBody = document.getElementById('vaxTbody');
-    const dewBody = document.getElementById('dewTbody');
-    if (vaxBody && data.vaccination) {
-      vaxBody.innerHTML = data.vaccination.map(item => buildScheduleRow(item, 'vaccination')).join('');
+    const data = window.getPetSchedule
+      ? window.getPetSchedule(PET_ID)
+      : (window.PET_SCHEDULES && window.PET_SCHEDULES[PET_ID]);
+    if (!data) {
+      console.warn('[Vet Paw House] No schedule found for pet id "' + PET_ID + '". Add an entry called "' + PET_ID +
+        '" in pet-schedules.js (and check that pet-schedules.js loads before petbox.js).');
     }
-    if (dewBody && data.deworming) {
-      dewBody.innerHTML = data.deworming.map(item => buildScheduleRow(item, 'deworming')).join('');
-    }
+    fillScheduleBody(document.getElementById('vaxTbody'), data && data.vaccination, 'vaccination', 'No vaccinations scheduled yet.');
+    fillScheduleBody(document.getElementById('dewTbody'), data && data.deworming, 'deworming', 'No deworming scheduled yet.');
   }
 
   function renderReminderBell() {
@@ -250,7 +265,7 @@
 
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeReminderModal(); });
 
-  renderScheduleTables(); // build rows from pet-schedules.js (if this pet has an entry there)
+  renderScheduleTables(); // build the rows from this pet's entry in pet-schedules.js
   applyTicks();           // restore ticks saved on a previous visit before counting
   renderReminderBell();
   // Slight delay so it doesn't collide with the page's entrance animation
