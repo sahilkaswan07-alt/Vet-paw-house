@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Vet Paw House sitemap (site: https://vetpawhouse.in/).
+  Upload this file to the SAME folder as index.html in your GitHub repository
+  (the same folder that has your CNAME file), then in Google Search Console
+  add your site as a "URL prefix" property (https://vetpawhouse.in/) and
+  under Sitemaps enter: sitemap.xml
+  Only public pages are listed. Private pages (pet boxes, admin) are left out on purpose.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Landing / About page (this is the site's front page) -->
+  <url>
+    <loc>https://vetpawhouse.in/</loc>
+    <lastmod>2026-09-22</lastmod>
+  </url>
+
+  <!-- Register your pet -->
+  <url>
+    <loc>https://vetpawhouse.in/registration.html</loc>
+    <lastmod>2026-09-22</lastmod>
+  </url>
+
+  <!-- Home: registered pets showcase -->
+  <url>
+    <loc>https://vetpawhouse.in/home.html</loc>
+    <lastmod>2026-09-22</lastmod>
+  </url>
+
+  <!-- Series -->
+  <url>
+    <loc>https://vetpawhouse.in/series.html</loc>
+    <lastmod>2026-09-22</lastmod>
+  </url>
+
+  <!-- Legal pages -->
+  <url>
+    <loc>https://vetpawhouse.in/terms.html</loc>
+    <lastmod>2026-09-22</lastmod>
+  </url>
+  <url>
+    <loc>https://vetpawhouse.in/privacy.html</loc>
+    <lastmod>2026-09-22</lastmod>
+  </url>
+
+</urlset>

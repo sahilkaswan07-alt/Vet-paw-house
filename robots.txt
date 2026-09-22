@@ -1,0 +1,13 @@
+# Vet Paw House — robots.txt
+# This file lives at the root of your custom domain: https://vetpawhouse.in/robots.txt
+# so search engines will now read it correctly (unlike the old github.io project-page URL).
+
+User-agent: *
+Allow: /
+
+# Private pages: every pet's own page shows the owner's name and phone number,
+# and the admin page is for the team only.
+Disallow: /petbox.html
+Disallow: /admin-payments.html
+
+Sitemap: https://vetpawhouse.in/sitemap.xml

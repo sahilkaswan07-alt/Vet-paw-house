@@ -125,6 +125,7 @@
     .sched-table .col-tick   { width: 70px; text-align: center; }
     .sched-table .col-date   { width: 120px; color: var(--muted); font-size: .76rem; }
     .sched-table tr.is-done td:first-child { opacity: .6; }
+    .sched-table .sched-empty { text-align: center; color: var(--muted); font-size: .8rem; padding: 1.1rem .5rem; }
 
     /* tick box — the owner taps it once the vaccine / treatment is done */
     .tick { position: relative; display: inline-flex; padding: 5px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
