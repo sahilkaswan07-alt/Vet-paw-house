@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audio Call Consultation | Vet Paw House</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="theme.js"></script>
+<style>
+  *,*::before,*::after{ margin:0; padding:0; box-sizing:border-box; }
+  :root{
+    /* Light mode (default) */
+    --bg:#fdfbf6; --surface:#ffffff; --card:#ffffff;
+    --accent:#ad590b; --accent2:#c65a5a; --accent3:#9a4fa8;
+    --accent-rgb:173,89,11; --accent2-rgb:198,90,90; --accent3-rgb:154,79,168;
+    --text:#1b1a22; --muted:#6b6b7a; --ok:#1f9d5c; --ok-rgb:31,157,92;
+    --surface-1:rgba(255,255,255,0.72); --surface-2:rgba(255,255,255,0.86);
+    --overlay-bg:rgba(60,45,28,0.35); --input-bg:rgba(255,255,255,0.92);
+    --recap-bg:rgba(20,15,10,0.035); --divider:rgba(0,0,0,0.07);
+    --track:rgba(0,0,0,0.12); --btn-text:#1b1a22;
+  }
+  html[data-theme="dark"]{
+    --bg:#0d0f14; --surface:#13151c; --card:#1a1d28;
+    --accent:#f4a24d; --accent2:#e07b7b; --accent3:#c96fd0;
+    --accent-rgb:244,162,77; --accent2-rgb:224,123,123; --accent3-rgb:201,111,208;
+    --text:#e8e2d5; --muted:#7a7a8c; --ok:#7bd3a0; --ok-rgb:123,211,160;
+    --surface-1:rgba(13,15,20,0.55); --surface-2:rgba(19,21,28,0.75);
+    --overlay-bg:rgba(6,7,10,0.72); --input-bg:rgba(13,15,20,0.7);
+    --recap-bg:rgba(13,15,20,0.6); --divider:rgba(255,255,255,0.06);
+    --track:rgba(255,255,255,0.14); --btn-text:#0d0f14;
+  }
+  html,body{ min-height:100%; background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; overflow-x:hidden; }
+  body::before{
+    content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(circle at 18% 20%, rgba(var(--accent-rgb),0.10), transparent 45%),
+      radial-gradient(circle at 85% 75%, rgba(var(--accent3-rgb),0.10), transparent 45%),
+      radial-gradient(circle at 60% 10%, rgba(100,160,255,0.06), transparent 40%);
+  }
+
+  .navbar{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:1rem 2rem; background:var(--surface-1); backdrop-filter:blur(16px);
+    border-bottom:1px solid rgba(var(--accent-rgb),0.12);
+  }
+  .nav-logo{
+    font-family:'Playfair Display',serif; font-weight:900; font-size:1.2rem;
+    background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    text-decoration:none;
+  }
+  .nav-back{ display:flex; align-items:center; gap:.4rem; color:var(--muted); text-decoration:none; font-size:.82rem; font-weight:600; transition:color .2s; }
+  .nav-back:hover{ color:var(--accent); }
+
+  .page{ position:relative; z-index:1; max-width:760px; margin:0 auto; padding:6.5rem 1.5rem 5rem; }
+
+  /* ---------- Doctor hero ---------- */
+  .doctor-hero{
+    display:flex; align-items:center; gap:1.6rem;
+    background:var(--surface-2); border:1px solid rgba(var(--accent-rgb),0.2);
+    border-radius:24px; padding:1.8rem; backdrop-filter:blur(18px);
+    box-shadow:0 0 80px rgba(var(--accent-rgb),0.08), 0 2px 40px rgba(0,0,0,0.12);
+    margin-bottom:1.6rem;
+  }
+  .doctor-photo{
+    width:104px; height:104px; border-radius:18px; object-fit:cover; flex-shrink:0;
+    border:2px solid rgba(var(--accent-rgb),0.4); background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Playfair Display',serif; font-size:2rem; font-weight:900; color:var(--btn-text);
+  }
+  .doctor-info{ flex:1; min-width:0; }
+  .doctor-name{
+    font-family:'Playfair Display',serif; font-size:clamp(1.3rem,4vw,1.7rem); font-weight:900;
+    background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    margin-bottom:.15rem;
+  }
+  .doctor-role{ color:var(--muted); font-size:.84rem; margin-bottom:.6rem; }
+  .doctor-price{ font-family:'Inter',sans-serif; font-weight:800; font-size:1.05rem; color:var(--accent); margin-bottom:.9rem; }
+  .doctor-price span{ font-weight:500; font-size:.78rem; color:var(--muted); }
+  .btn-call{
+    display:inline-flex; align-items:center; gap:.5rem;
+    background:linear-gradient(135deg,var(--accent),var(--accent2)); color:var(--btn-text);
+    border:none; border-radius:60px; padding:.75rem 1.4rem;
+    font-family:'Inter',sans-serif; font-weight:700; font-size:.82rem;
+    letter-spacing:.03em; cursor:pointer; box-shadow:0 0 30px rgba(var(--accent-rgb),0.3);
+    transition:transform .2s, box-shadow .2s;
+  }
+  .btn-call:hover{ transform:translateY(-2px); box-shadow:0 0 50px rgba(var(--accent-rgb),0.45); }
+
+  /* ---------- Sections ---------- */
+  .sec{
+    background:var(--surface-2); border:1px solid rgba(var(--accent-rgb),0.14);
+    border-radius:20px; padding:1.6rem 1.8rem; backdrop-filter:blur(14px);
+    box-shadow:0 0 40px rgba(var(--accent-rgb),0.05), 0 2px 24px rgba(0,0,0,0.1);
+    margin-bottom:1.4rem;
+  }
+  .sec-title{
+    display:flex; align-items:center; gap:.6rem;
+    font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700;
+    color:var(--text); margin-bottom:1rem;
+  }
+  .include-list{ list-style:none; display:flex; flex-direction:column; gap:.7rem; margin-bottom:1.3rem; }
+  .include-list li{
+    display:flex; align-items:flex-start; gap:.6rem;
+    font-size:.88rem; line-height:1.5; color:var(--text);
+  }
+  .include-list li::before{
+    content:'✓'; color:var(--ok); font-weight:800; flex-shrink:0;
+    width:20px; height:20px; border-radius:50%; background:rgba(var(--ok-rgb),0.12);
+    display:flex; align-items:center; justify-content:center; font-size:.7rem; margin-top:.1rem;
+  }
+  .include-note{ color:var(--muted); font-size:.78rem; line-height:1.5; margin-bottom:1.2rem; }
+  .btn-book-bottom{
+    width:100%; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:var(--btn-text);
+    border:none; border-radius:14px; padding:.95rem; font-family:'Inter',sans-serif;
+    font-weight:700; font-size:.9rem; cursor:pointer; box-shadow:0 0 30px rgba(var(--accent-rgb),0.25);
+    transition:transform .2s, box-shadow .2s;
+  }
+  .btn-book-bottom:hover{ transform:translateY(-2px); box-shadow:0 0 50px rgba(var(--accent-rgb),0.4); }
+
+  /* ---------- Overlay / booking modal ---------- */
+  .overlay{
+    position:fixed; inset:0; z-index:100; display:none;
+    align-items:flex-start; justify-content:center;
+    background:var(--overlay-bg); backdrop-filter:blur(6px);
+    padding:2.5rem 1rem; overflow-y:auto;
+  }
+  .overlay.show{ display:flex; }
+  .modal{
+    position:relative; width:100%; max-width:520px;
+    background:var(--surface); border:1px solid rgba(var(--accent-rgb),0.22);
+    border-radius:22px; padding:1.8rem 1.6rem 2rem;
+    box-shadow:0 0 80px rgba(var(--accent-rgb),0.1), 0 4px 50px rgba(0,0,0,0.18);
+  }
+  .modal-close{
+    position:absolute; top:14px; right:14px; width:32px; height:32px; border-radius:50%;
+    border:1px solid rgba(var(--accent-rgb),0.3); background:rgba(var(--accent-rgb),0.08); color:var(--text);
+    font-size:.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  }
+  .modal h2{ font-family:'Playfair Display',serif; font-size:1.35rem; font-weight:900; margin-bottom:.3rem; padding-right:2rem; }
+  .modal .sub{ color:var(--muted); font-size:.82rem; margin-bottom:1.3rem; }
+
+  .b-progress{ display:flex; align-items:center; gap:6px; margin-bottom:1.4rem; }
+  .b-progress .dot{ width:9px; height:9px; border-radius:50%; background:var(--track); flex-shrink:0; transition:background .2s; }
+  .b-progress .dot.active{ background:var(--accent); }
+  .b-progress .dot.done{ background:rgba(var(--ok-rgb),0.7); }
+  .b-progress .bar{ flex:1; height:2px; background:var(--track); border-radius:2px; }
+  .b-progress .bar.done{ background:rgba(var(--ok-rgb),0.5); }
+
+  .b-step{ display:none; }
+  .b-step.active{ display:block; }
+
+  .field{ margin-bottom:1rem; }
+  .field label{ display:block; font-size:.72rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--accent); margin-bottom:.45rem; }
+  .field input, .field select{
+    width:100%; background:var(--input-bg); border:1px solid rgba(var(--accent-rgb),0.22);
+    border-radius:12px; padding:.75rem .9rem; color:var(--text);
+    font-family:'Inter',sans-serif; font-size:.9rem; outline:none;
+    transition:border-color .2s, box-shadow .2s;
+  }
+  .field input:focus, .field select:focus{ border-color:var(--accent); box-shadow:0 0 0 3px rgba(var(--accent-rgb),0.12); }
+  .field .err{ display:none; color:var(--accent2); font-size:.74rem; margin-top:.4rem; }
+  .field.invalid input{ border-color:var(--accent2); }
+  .field.invalid .err{ display:block; }
+  .field small{ display:block; color:var(--muted); font-size:.72rem; margin-top:.4rem; }
+  .row2{ display:grid; grid-template-columns:1fr 1fr; gap:.8rem; }
+
+  .plan-recap{
+    background:rgba(var(--accent-rgb),0.08); border:1px solid rgba(var(--accent-rgb),0.3);
+    border-radius:14px; padding:.9rem 1.1rem; margin-bottom:1.2rem;
+    display:flex; justify-content:space-between; align-items:center; font-size:.86rem;
+  }
+  .plan-recap strong{ color:var(--accent); }
+
+  .upi-box{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background:var(--input-bg); border:1px solid rgba(var(--accent-rgb),0.25);
+    border-radius:12px; padding:.85rem 1rem; margin-bottom:1rem;
+  }
+  .upi-id{ font-weight:700; font-size:.92rem; word-break:break-all; }
+  .copy-btn{
+    flex-shrink:0; background:rgba(var(--accent-rgb),0.14); border:1px solid rgba(var(--accent-rgb),0.4);
+    color:var(--accent); border-radius:8px; padding:.4rem .8rem; font-size:.74rem; font-weight:700; cursor:pointer;
+  }
+  .steps-list{ margin:0 0 1.2rem 1.1rem; font-size:.85rem; line-height:1.7; color:var(--text); }
+
+  .send-status{ min-height:20px; font-size:.8rem; color:var(--ok); margin-bottom:.6rem; }
+  .send-status.error{ color:var(--accent2); }
+
+  .btn-row{ display:flex; gap:.8rem; margin-top:.4rem; }
+  .btn{ flex:1; padding:.85rem 1.2rem; border-radius:60px; border:none; font-family:'Inter',sans-serif; font-weight:700; font-size:.8rem; letter-spacing:.03em; cursor:pointer; transition:transform .2s, box-shadow .2s, opacity .2s; }
+  .btn:disabled{ opacity:.5; cursor:not-allowed; transform:none; }
+  .btn-primary{ background:linear-gradient(135deg,var(--accent),var(--accent2)); color:var(--btn-text); box-shadow:0 0 30px rgba(var(--accent-rgb),0.3); }
+  .btn-primary:hover:not(:disabled){ transform:translateY(-2px); }
+  .btn-ghost{ background:rgba(var(--accent-rgb),0.08); border:1.5px solid rgba(var(--accent-rgb),0.35); color:var(--accent); }
+  .btn-ghost:hover:not(:disabled){ background:rgba(var(--accent-rgb),0.15); }
+
+  .success{ text-align:center; padding:.5rem 0; }
+  .success .check{
+    width:60px; height:60px; border-radius:50%; margin:0 auto 1.1rem;
+    background:rgba(var(--ok-rgb),0.14); border:2px solid rgba(var(--ok-rgb),0.5);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .success .check svg{ width:28px; height:28px; stroke:var(--ok); stroke-width:2.4; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+  .success h2{ font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:900; margin-bottom:.6rem; }
+  .success p{ color:var(--muted); font-size:.86rem; line-height:1.6; margin-bottom:1.3rem; }
+  .success .recap{ text-align:left; background:var(--recap-bg); border:1px solid rgba(var(--accent-rgb),0.15); border-radius:12px; padding:.9rem 1rem; font-size:.84rem; margin-bottom:1.2rem; }
+  .success .recap div{ display:flex; justify-content:space-between; padding:.35rem 0; border-bottom:1px solid var(--divider); }
+  .success .recap div:last-child{ border-bottom:none; }
+  .success .recap span:first-child{ color:var(--muted); }
+
+  @media (max-width:520px){
+    .doctor-hero{ flex-direction:column; text-align:center; padding:1.6rem 1.2rem; }
+    .row2{ grid-template-columns:1fr; }
+    .page{ padding:6rem 1rem 4rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <a href="home.html" class="nav-logo">🐾 Vet Paw House</a>
+  <a href="home.html" class="nav-back">← Home</a>
+</div>
+
+<div class="page">
+
+  <!-- Doctor hero: photo left, name + call CTA right -->
+  <div class="doctor-hero">
+    <!-- Replace with an actual photo: <img class="doctor-photo" src="doctor.jpg" alt="Dr. Name"> -->
+    <div class="doctor-photo" id="doctorPhoto">DR</div>
+    <div class="doctor-info">
+      <div class="doctor-name" id="doctorName">Veterinary Consultant</div>
+      <div class="doctor-role">B.V.Sc&A.H. </div>
+      <div class="doctor-price">₹249 <span>/ year — audio call plan</span></div>
+      <button class="btn-call" onclick="openBooking()">📞 Book Audio Call</button>
+    </div>
+  </div>
+
+  <!-- What's included -->
+  <div class="sec">
+    <div class="sec-title">📋 What you get with the Audio Call Plan</div>
+    <ul class="include-list">
+      <li>A private audio call with our expert to walk you through all your pet's plans — vaccine schedule, deworming schedule, and pet ID card &amp; QR code details.</li>
+      <li>A personalised diet plan for your pet, discussed directly with our expert.</li>
+      <li>Skin care guidance — advice for common coat and skin issues.</li>
+      <li>A chance to ask any general questions about your pet's care.</li>
+    </ul>
+    <p class="include-note">Valid for one year from the date your booking is verified. 10 audio call consultations are included in this plan.</p>
+    <button class="btn-book-bottom" onclick="openBooking()">Book Audio Call Appointment →</button>
+  </div>
+
+</div>
+
+<!-- Booking modal -->
+<div class="overlay" id="bookingOverlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeBooking()">✕</button>
+
+    <div class="b-progress" id="bProgress">
+      <div class="dot active" data-step="1"></div>
+      <div class="bar" data-bar="1"></div>
+      <div class="dot" data-step="2"></div>
+      <div class="bar" data-bar="2"></div>
+      <div class="dot" data-step="3"></div>
+    </div>
+
+    <!-- STEP 1: booking details -->
+    <div class="b-step active" id="bStep1">
+      <h2>Book your audio call</h2>
+      <p class="sub">Tell us a bit about you and your pet, and when you'd like the call.</p>
+
+      <div class="field" id="f-ownerName">
+        <label>Owner Name</label>
+        <input type="text" id="in-ownerName" placeholder="e.g. Sahil Choudhary" autocomplete="name">
+        <div class="err">Please enter the owner's name.</div>
+      </div>
+      <div class="field" id="f-ownerContact">
+        <label>Owner Contact No. (for the call)</label>
+        <input type="tel" id="in-ownerContact" placeholder="e.g. 98765 43210" autocomplete="tel">
+        <div class="err">Please enter a valid 10-digit contact number.</div>
+      </div>
+      <div class="field" id="f-ownerEmail">
+        <label>Owner Email</label>
+        <input type="email" id="in-ownerEmail" placeholder="e.g. sahil@example.com" autocomplete="email">
+        <div class="err">Please enter a valid email address.</div>
+      </div>
+      <div class="field" id="f-petName">
+        <label>Pet Name</label>
+        <input type="text" id="in-petName" placeholder="e.g. Bruno">
+        <div class="err">Please enter your pet's name.</div>        
+      </div>
+      <div class="field" id="f-code">
+  <label>Code <span style="font-weight:500;color:var(--muted);">(Optional)</span></label>
+  <input type="text" id="in-code" placeholder="Enter code">
+</div>
+      <div class="row2">
+        <div class="field" id="f-prefDate">
+          <label>Preferred Date</label>
+          <input type="date" id="in-prefDate">
+          <div class="err">Please choose a preferred date.</div>
+        </div>
+        <div class="field" id="f-prefTime">
+          <label>Preferred Time</label>
+          <select id="in-prefTime">
+            <option value="" selected disabled>Select a slot</option>
+            <option>10:00 AM – 12:00 PM</option>
+            <option>12:00 PM – 2:00 PM</option>
+            <option>4:00 PM – 6:00 PM</option>
+            <option>6:00 PM – 8:00 PM</option>
+          </select>
+          <div class="err">Please choose a time slot.</div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn btn-primary" onclick="goToPayment()">Continue to Payment →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: payment -->
+    <div class="b-step" id="bStep2">
+      <h2>Confirm &amp; pay</h2>
+      <p class="sub">The ₹249/year audio call plan is confirmed the same way as our other plans — pay via UPI, then submit for verification.</p>
+
+      <div class="plan-recap">
+        <span>Audio Call Consultation Plan</span>
+        <strong>₹249 / year</strong>
+      </div>
+
+      <div class="section-title" style="font-weight:700;font-size:.85rem;margin-bottom:.6rem;color:var(--text);">1. Pay via UPI</div>
+      <div class="upi-box">
+        <span class="upi-id" id="upiId"></span>
+        <button type="button" class="copy-btn" id="copyUpiBtn">Copy</button>
+      </div>
+      <ol class="steps-list">
+        <li>Open any UPI app (Google Pay, PhonePe, Paytm).</li>
+        <li>Pay ₹249 to the UPI ID above.</li>
+        <li>Copy the UPI transaction / reference ID (UTR) from your payment app.</li>
+        <li>Paste it below and submit for verification.</li>
+      </ol>
+
+      <div class="section-title" style="font-weight:700;font-size:.85rem;margin-bottom:.6rem;color:var(--text);">2. Confirm your payment</div>
+      <div class="field" id="f-utr">
+        <label for="utrInput">UPI Transaction / Reference ID (UTR)</label>
+        <input type="text" id="utrInput" placeholder="e.g. 402911234567" autocomplete="off">
+        <small>Find it in your payment app's transaction history right after paying.</small>
+        <div class="err">Enter the UTR exactly as shown (6–25 letters or numbers, no spaces).</div>
+      </div>
+      <div class="field" id="f-amount">
+        <label for="amountPaid">Amount Paid (₹)</label>
+        <input type="number" id="amountPaid" min="1" inputmode="numeric" value="249">
+        <div class="err">Enter the amount you paid.</div>
+      </div>
+
+      <div class="send-status" id="sendStatus"></div>
+
+      <div class="btn-row">
+        <button type="button" class="btn btn-ghost" onclick="goToBStep(1)">← Back</button>
+        <button type="button" class="btn btn-primary" id="submitBookBtn" onclick="submitBooking()">Submit for Verification</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: submitted -->
+    <div class="b-step" id="bStep3">
+      <div class="success">
+        <div class="check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
+        <h2>Appointment Submitted!</h2>
+        <p id="successText"></p>
+        <div class="recap" id="successRecap"></div>
+        <div class="btn-row">
+          <button type="button" class="btn btn-primary" onclick="closeBooking()">Done</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  /* ===================== CONFIG — EDIT THESE ===================== */
+  const UPI_ID = "7300479727@centralbank";       // same UPI ID used on the registration page
+  const RECEIVER_EMAIL = "housepaw07@gmail.com";
+  const WEB3FORMS_ACCESS_KEY = "ee2fb5fe-647a-4a1f-87a5-52584cbded54";
+  const PLAN_NAME = "Audio Call Consultation Plan";
+  const PLAN_AMOUNT ='249';
+  /* ================================================================= */
+
+  const $ = id => document.getElementById(id);
+  let bookingData = null;
+
+  function openBooking(){
+    $("bookingOverlay").classList.add("show");
+    document.body.style.overflow = "hidden";
+    goToBStep(1);
+  }
+  function closeBooking(){
+    $("bookingOverlay").classList.remove("show");
+    document.body.style.overflow = "";
+  }
+  $("bookingOverlay").addEventListener("click", (e) => { if (e.target.id === "bookingOverlay") closeBooking(); });
+
+  function goToBStep(n){
+    document.querySelectorAll(".b-step").forEach(s => s.classList.remove("active"));
+    $("bStep" + n).classList.add("active");
+    document.querySelectorAll("#bProgress .dot").forEach(d => {
+      const step = Number(d.dataset.step);
+      d.classList.toggle("active", step === n);
+      d.classList.toggle("done", step < n);
+    });
+    document.querySelectorAll("#bProgress .bar").forEach(b => {
+      const step = Number(b.dataset.bar);
+      b.classList.toggle("done", step < n);
+    });
+  }
+
+  function setError(id, show){ $(id).classList.toggle("invalid", show); }
+  function clearError(id){ setError(id, false); }
+  function escapeHtml(str){ return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+  function validateStep1(){
+    let ok = true;
+    const ownerName = $("in-ownerName").value.trim();
+    const ownerContact = $("in-ownerContact").value.trim();
+    const ownerEmail = $("in-ownerEmail").value.trim();
+    const petName = $("in-petName").value.trim();
+    const code = $("in-code").value.trim();
+    const prefDate = $("in-prefDate").value;
+    const prefTime = $("in-prefTime").value;
+
+
+    if (ownerName.length < 2) { setError("f-ownerName", true); ok = false; } else clearError("f-ownerName");
+    if (!/^[0-9+\-\s]{7,15}$/.test(ownerContact)) { setError("f-ownerContact", true); ok = false; } else clearError("f-ownerContact");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ownerEmail)) { setError("f-ownerEmail", true); ok = false; } else clearError("f-ownerEmail");
+    if (petName.length < 1) { setError("f-petName", true); ok = false; } else clearError("f-petName");
+    if (!prefDate) { setError("f-prefDate", true); ok = false; } else clearError("f-prefDate");
+    if (!prefTime) { setError("f-prefTime", true); ok = false; } else clearError("f-prefTime");
+    
+
+    if (!ok) return null;
+    return { ownerName, ownerContact, ownerEmail, petName, code, prefDate, prefTime };
+  }
+
+  function goToPayment(){
+    const data = validateStep1();
+    if (!data) return;
+    bookingData = data;
+
+    $("upiId").textContent = UPI_ID;
+    $("amountPaid").value = PLAN_AMOUNT;
+    clearError("f-utr"); clearError("f-amount");
+    const status = $("sendStatus");
+    status.classList.remove("error"); status.textContent = "";
+    const btn = $("submitBookBtn");
+    btn.disabled = false; btn.textContent = "Submit for Verification";
+
+    goToBStep(2);
+  }
+
+  $("copyUpiBtn").addEventListener("click", () => {
+    const btn = $("copyUpiBtn");
+    const original = btn.textContent;
+    const done = (text) => { btn.textContent = text; setTimeout(() => { btn.textContent = original; }, 1500); };
+    if (!navigator.clipboard) { done("Copy manually"); return; }
+    navigator.clipboard.writeText(UPI_ID).then(() => done("Copied!")).catch(() => done("Copy manually"));
+  });
+
+  // Wait for firebase.js to finish loading (same pattern as registration.html)
+  function waitForFirebaseModule(){
+    if (window.__paw_fb_ready) return Promise.resolve(true);
+    return new Promise((resolve) => {
+      let waited = 0;
+      const iv = setInterval(() => {
+        waited += 100;
+        if (window.__paw_fb_ready) { clearInterval(iv); resolve(true); }
+        else if (waited >= 5000) { clearInterval(iv); resolve(false); }
+      }, 100);
+    });
+  }
+
+  async function notifyTeam(docId, utr, amount){
+    const payload = {
+      access_key: WEB3FORMS_ACCESS_KEY,
+      subject: `New Audio Call Booking — ${bookingData.petName} (${bookingData.ownerName})`,
+      from_name: "Vet Paw House — Audio Call Booking",
+      owner_name: bookingData.ownerName,
+      owner_contact: bookingData.ownerContact,
+      owner_email: bookingData.ownerEmail,
+      replyto: bookingData.ownerEmail,
+      pet_name: bookingData.petName,
+      code: bookingData.code || "(none)",
+      preferred_date: bookingData.prefDate,
+      preferred_time: bookingData.prefTime,
+      to_email: RECEIVER_EMAIL,
+      plan: PLAN_NAME,
+      plan_price: `₹${PLAN_AMOUNT} / year`,
+      amount_paid: `₹${amount}`,
+      utr: utr,
+      payment_status: "Pending verification",
+      firebase_id: docId
+    };
+    const res = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const result = await res.json();
+    if (!result.success) throw new Error(result.message || "Email send failed");
+  }
+
+  async function submitBooking(){
+    const utr = $("utrInput").value.trim();
+    const amount = Number($("amountPaid").value);
+
+    let ok = true;
+    if (!/^[A-Za-z0-9]{6,25}$/.test(utr)) { setError("f-utr", true); ok = false; } else clearError("f-utr");
+    if (!amount || amount <= 0) { setError("f-amount", true); ok = false; } else clearError("f-amount");
+    if (!ok) return;
+
+    const btn = $("submitBookBtn");
+    const status = $("sendStatus");
+    btn.disabled = true; btn.textContent = "Submitting...";
+    status.classList.remove("error");
+    status.textContent = "Saving your booking...";
+
+    try {
+      if (!(await waitForFirebaseModule())) {
+        throw new Error("Couldn't connect to the database. Refresh the page and try again.");
+      }
+
+      const docRef = await window.__paw_saveConsultation({
+        ownerName: bookingData.ownerName,
+        ownerContact: bookingData.ownerContact,
+        ownerEmail: bookingData.ownerEmail,
+        petName: bookingData.petName,
+        code: bookingData.code || "",
+        preferredDate: bookingData.prefDate,
+        preferredTime: bookingData.prefTime,
+        planName: PLAN_NAME,
+        planAmount: PLAN_AMOUNT,
+        amount: amount,
+        utr: utr,
+        status: "pending"
+      });
+
+      if (!docRef) throw new Error("Couldn't save to the database. Check Firebase rules/console.");
+
+      notifyTeam(docRef.id, utr, amount)
+        .catch(err => console.warn("Team email failed (booking is saved):", err));
+
+      $("successText").innerHTML =
+        `Thanks, ${escapeHtml(bookingData.ownerName)} 🐾<br>` +
+        `We're verifying your payment. Once verified, we'll inform you and contact you to confirm your audio call appointment.`;
+      $("successRecap").innerHTML = `
+        <div><span>Pet</span><span>${escapeHtml(bookingData.petName)}</span></div>
+        <div><span>Preferred slot</span><span>${escapeHtml(bookingData.prefDate)}, ${escapeHtml(bookingData.prefTime)}</span></div>
+        <div><span>Plan</span><span>${escapeHtml(PLAN_NAME)}</span></div>
+        <div><span>Amount paid</span><span>₹${escapeHtml(String(amount))}</span></div>
+        <div><span>UTR</span><span>${escapeHtml(utr)}</span></div>
+        <div><span>Status</span><span>Pending verification</span></div>
+      `;
+      status.textContent = "";
+      goToBStep(3);
+    } catch (err) {
+      console.error("submitBooking error:", err);
+      status.classList.add("error");
+      status.textContent = "Couldn't submit: " + err.message;
+      btn.disabled = false;
+      btn.textContent = "Submit for Verification";
+    }
+  }
+</script>
+
+<!-- Saves bookings to the same Firebase project (its "consultations" collection),
+     so they show up in admin.html under the "Audio Calls" tab for verification. -->
+<script type="module">
+  import { app } from "./firebase.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const db = getFirestore(app);
+
+  window.__paw_saveConsultation = async function (data) {
+    const ref = await addDoc(collection(db, "consultations"), {
+      ...data,
+      createdAt: serverTimestamp()
+    });
+    return ref;
+  };
+  window.__paw_fb_ready = true;
+</script>
+</body>
+</html>

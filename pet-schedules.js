@@ -35,10 +35,13 @@ window.PET_SCHEDULES = {
 
   casper: {
     vaccination: [
-      { id: 'vax-dhppi',   name: 'DHPPi (Core Vaccine)', due: '2026-07-21' },
-      { id: 'vax-rabies',  name: 'Rabies',                due: '2026-07-21' },
-      { id: 'vax-lepto',   name: 'Leptospirosis',         due: '2026-07-21' },
-      { id: 'vax-booster', name: 'Booster Dose',          due: '2026-07-21' }
+      { id: 'vax-dhppi',   name: 'DHPPi (initial baseline)', due: '2026-09-25' },
+      { id: 'vax-rabies',  name: 'Rabies',                due: '2026-09-25' },
+      { id: 'vax-dhppi',   name: 'DHPPi (Core Vaccine)',         due: '2026-10-25' },
+      { id: 'vax-booster', name: 'DHPPi (Booster)',          due: '2027-10-25' },
+      { id: 'vax-booster',  name: 'Rabies (Booster)',                due: '2027-10-25' },
+      { id: 'vax-dhppi',   name: 'DHPPi (booster maintenance)',         due: '2030-10-25' },
+      { id: 'vax-rabies',  name: 'Rabies (booster maintenance)',                due: '2028-10-25' },
     ],
     deworming: [
       { id: 'dew-1st',       name: '1st Deworming',        due: '2026-07-21' },

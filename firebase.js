@@ -98,6 +98,7 @@ window.saveUserToFirebase = async function (formData, petPhotoDataUrl, payment) 
       petSex: formData.petSex || "",
       petAge: formData.petAgeDisplay || "",
       petPhoto: photoData,
+      code: (formData.code || "").trim(),
       plan: payment.planId,
       planName: payment.planName,
       planAmount: payment.planAmount,
