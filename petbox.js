@@ -268,8 +268,8 @@
   renderScheduleTables(); // build the rows from this pet's entry in pet-schedules.js
   applyTicks();           // restore ticks saved on a previous visit before counting
   renderReminderBell();
-  // Slight delay so it doesn't collide with the page's entrance animation
-  setTimeout(maybeAutoShowReminder, 600);
+  // Auto-popup disabled: the reminder popup now only opens when the owner
+  // clicks the bell icon (see openReminderModal, bound to the bell's onclick).
 
   /* ===== FOOTER YEAR ===== */
   document.getElementById('year').textContent = new Date().getFullYear();
