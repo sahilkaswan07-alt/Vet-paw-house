@@ -9,45 +9,46 @@
   <link rel="stylesheet" href="home.css">
   <script src="theme.js"></script>
   <style>
-    /* ===== FOUNDER PAGE — page-specific styles only.
+    /* ===== TEAM PAGE — page-specific styles only.
        Shared nav/canvas/footer rules live in home.css, same as home.html. ===== */
 
-    .founder-section{
+    /* ----- CEO spotlight, shown before the team grid ----- */
+    .ceo-section{
       position:relative; z-index:2;
       max-width:1080px; margin:0 auto;
-      padding:120px 24px 100px;
+      padding:120px 24px 60px; /* top padding clears the fixed navbar */
     }
 
-    .founder-card{
+    .ceo-card{
       display:grid;
-      grid-template-columns:340px 1fr;
-      gap:56px;
+      grid-template-columns:320px 1fr;
+      gap:48px;
       align-items:center;
       background:rgba(27,30,39,.55);
       border:1px solid rgba(244,162,77,.18);
       border-radius:20px;
       backdrop-filter:blur(18px);
       -webkit-backdrop-filter:blur(18px);
-      padding:48px;
+      padding:40px;
       box-shadow:0 20px 60px rgba(0,0,0,.35);
     }
-    :root[data-theme="light"] .founder-card,
-    html:not([data-theme="dark"]) .founder-card{
+    :root[data-theme="light"] .ceo-card,
+    html:not([data-theme="dark"]) .ceo-card{
       background:rgba(255,255,255,.55);
       border-color:rgba(201,111,208,.18);
     }
 
-    .founder-photo-wrap{
+    .ceo-photo-wrap{
       position:relative;
       border-radius:16px;
       overflow:hidden;
       aspect-ratio:4/5;
       box-shadow:0 16px 40px rgba(0,0,0,.4);
     }
-    .founder-photo-wrap img{
+    .ceo-photo-wrap img{
       width:100%; height:100%; object-fit:cover; display:block;
     }
-    .founder-photo-tag{
+    .ceo-photo-tag{
       position:absolute; left:16px; bottom:16px;
       font-family:'Inter',sans-serif; font-size:12px; font-weight:600;
       letter-spacing:.02em;
@@ -58,61 +59,139 @@
       backdrop-filter:blur(6px);
     }
 
-    .founder-eyebrow{
+    .ceo-eyebrow{
       font-family:'Inter',sans-serif; font-size:14px; font-weight:500;
       color:#f4a24d; margin:0 0 10px;
     }
-    .founder-name{
+    .ceo-name{
       font-family:'Playfair Display',serif; font-weight:900;
-      font-size:clamp(28px,3.4vw,40px); line-height:1.15;
+      font-size:clamp(26px,3.2vw,36px); line-height:1.15;
       margin:0 0 6px; color:inherit;
     }
-    .founder-credential{
+    .ceo-credential{
       font-family:'Inter',sans-serif; font-size:15px; font-weight:500;
       color:rgba(246,241,231,.75); margin:0 0 22px;
     }
-    :root[data-theme="light"] .founder-credential,
-    html:not([data-theme="dark"]) .founder-credential{
+    :root[data-theme="light"] .ceo-credential,
+    html:not([data-theme="dark"]) .ceo-credential{
       color:rgba(30,25,20,.65);
     }
 
-    .founder-bio{
+    .ceo-bio{
       font-family:'Inter',sans-serif; font-weight:300; font-size:16px;
       line-height:1.7; max-width:56ch;
       color:rgba(246,241,231,.85); margin:0 0 28px;
     }
-    :root[data-theme="light"] .founder-bio,
-    html:not([data-theme="dark"]) .founder-bio{
+    :root[data-theme="light"] .ceo-bio,
+    html:not([data-theme="dark"]) .ceo-bio{
       color:rgba(30,25,20,.78);
     }
 
-    .founder-quote{
+    .ceo-quote{
       border-left:2px solid #f4a24d;
       padding:4px 0 4px 22px;
       margin:0;
     }
-    .founder-quote-hi{
+    .ceo-quote-hi{
       font-family:'Noto Sans Devanagari','Inter',sans-serif;
       font-weight:500; font-size:19px; line-height:1.85;
       color:#f4a24d; margin:0 0 8px;
     }
-    .founder-quote-en{
+    .ceo-quote-en{
       font-family:'Inter',sans-serif; font-weight:300; font-style:italic;
       font-size:14px; line-height:1.6;
       color:rgba(246,241,231,.6); margin:0;
     }
-    :root[data-theme="light"] .founder-quote-en,
-    html:not([data-theme="dark"]) .founder-quote-en{
+    :root[data-theme="light"] .ceo-quote-en,
+    html:not([data-theme="dark"]) .ceo-quote-en{
       color:rgba(30,25,20,.55);
     }
 
     @media (max-width:760px){
-      .founder-card{
+      .ceo-card{
         grid-template-columns:1fr;
-        padding:32px 24px;
-        gap:32px;
+        padding:28px 24px;
+        gap:28px;
       }
-      .founder-photo-wrap{ max-width:280px; margin:0 auto; }
+      .ceo-photo-wrap{ max-width:260px; margin:0 auto; }
+      .ceo-eyebrow, .ceo-name, .ceo-credential{ text-align:center; }
+    }
+
+    .team-section{
+      position:relative; z-index:2;
+      max-width:1200px; margin:0 auto;
+      padding:40px 24px 100px;
+    }
+
+    .team-heading{ text-align:center; margin:0 0 56px; }
+    .team-eyebrow{
+      font-family:'Inter',sans-serif; font-size:14px; font-weight:500;
+      color:#f4a24d; margin:0 0 10px;
+    }
+    .team-title{
+      font-family:'Playfair Display',serif; font-weight:900;
+      font-size:clamp(28px,3.6vw,42px); line-height:1.15;
+      margin:0; color:inherit;
+    }
+
+    /* Auto-flowing grid: add as many .team-card blocks as you like later,
+       this will keep wrapping them into rows on its own — no layout edits needed. */
+    .team-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+      gap:32px;
+    }
+
+    .team-card{
+      background:rgba(27,30,39,.55);
+      border:1px solid rgba(244,162,77,.18);
+      border-radius:20px;
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+      padding:28px;
+      box-shadow:0 20px 60px rgba(0,0,0,.35);
+      text-align:center;
+    }
+    :root[data-theme="light"] .team-card,
+    html:not([data-theme="dark"]) .team-card{
+      background:rgba(255,255,255,.55);
+      border-color:rgba(201,111,208,.18);
+    }
+
+    .team-photo-wrap{
+      position:relative;
+      border-radius:16px;
+      overflow:hidden;
+      aspect-ratio:4/5;
+      box-shadow:0 12px 30px rgba(0,0,0,.4);
+      margin:0 0 20px;
+    }
+    .team-photo-wrap img{
+      width:100%; height:100%; object-fit:cover; display:block;
+    }
+
+    .team-name{
+      font-family:'Playfair Display',serif; font-weight:900;
+      font-size:20px; line-height:1.25;
+      margin:0 0 4px; color:inherit;
+    }
+    .team-credential{
+      font-family:'Inter',sans-serif; font-size:13px; font-weight:500;
+      color:#f4a24d; margin:0 0 14px;
+    }
+    .team-bio{
+      font-family:'Inter',sans-serif; font-weight:300; font-size:14.5px;
+      line-height:1.6;
+      color:rgba(246,241,231,.8); margin:0;
+    }
+    :root[data-theme="light"] .team-bio,
+    html:not([data-theme="dark"]) .team-bio{
+      color:rgba(30,25,20,.72);
+    }
+
+    @media (max-width:760px){
+      .team-grid{ grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:24px; }
+      .team-card{ padding:22px; }
     }
   </style>
 </head>
@@ -133,28 +212,74 @@
     <div class="nav-menu" id="navMenu" aria-label="Site menu"></div>
   </nav>
 
-  <!-- FOUNDER & CEO -->
-  <section class="founder-section" id="founder-section">
-    <div class="founder-card">
-      <div class="founder-photo-wrap">
-        <img src="founder.jpg" alt="Dr. Sahil Choudhary, Founder & CEO of Vet Paw House">
-        <span class="founder-photo-tag">Founder & CEO</span>
+  <!-- CEO --
+  <section class="ceo-section" id="ceo-section">
+    <div class="ceo-card">
+      <div class="ceo-photo-wrap">
+        <img src="ceo.png" alt="Dr. Vijay Maan, Veterinary Doctor and CEO of Vet Paw House">
+        <span class="ceo-photo-tag">CEO</span>
       </div>
-      <div class="founder-content">
-        <p class="founder-eyebrow">Founder & CEO</p>
-        <h1 class="founder-name">Dr. Sahil Choudhary</h1>
-        <p class="founder-credential">B.V.Sc &amp; A.H. — Veterinary Doctor</p>
-        <p class="founder-bio">
-          Dr. Sahil Choudhary founded Vet Paw House to bring together modern veterinary
-          care and genuine love for animals under one roof. With a background in
-          Veterinary Science and Animal Husbandry, he leads the clinic's mission to
-          keep every registered pet healthy, tracked, and cared for — one wagging
-          tail at a time.
+      <div class="ceo-content">
+        <p class="ceo-eyebrow">CEO</p>
+        <h1 class="ceo-name">Dr. Vijay Maan</h1>
+        <p class="ceo-credential">B.V.Sc &amp; A.H. — Veterinary Doctor</p>
+        <p class="ceo-bio">
+          Dr. Vijay Maan leads Vet Paw House with a mission to bring modern
+          veterinary care and genuine love for animals under one roof. With a
+          background in Veterinary Science and Animal Husbandry, he oversees
+          the clinic's work to keep every registered pet healthy, tracked,
+          and cared for — one wagging tail at a time.
         </p>
-        <blockquote class="founder-quote">
-          <p class="founder-quote-hi">तू करता वो है जो तू चाहता है, पर होता वही है जो मैं चाहता हूँ। तू वो कर जो मैं चाहता हूँ, फिर होगा वही जो तू चाहता है</p>
-          <p class="founder-quote-en">"I refuse to die, i will figure it out"</p>
+        <blockquote class="ceo-quote">
+          <p class="ceo-quote-hi">I refuse to die, I will figure out it</p>
+          
         </blockquote>
+      </div>
+    </div>
+  </section> -->
+
+  <!-- OUR TEAM -->
+  <section class="team-section" id="team-section">
+    <div class="team-heading"> 
+      <br>     
+      <h1 class="team-title">Our Veterinarians</h1>
+      <p class="team-eyebrow">Meet The Team</p>
+    </div>
+
+    <div class="team-grid">
+      <!-- TEAM CARD — copy this whole <div class="team-card">...</div> block
+           and paste it again inside .team-grid to add another vet later.
+           Just change the img src, alt, name, credential and bio line. -->
+      <div class="team-card">
+        <div class="team-photo-wrap">
+          <img src="ceo.png" alt="Dr. Vet One, Veterinarian at Vet Paw House">
+        </div>
+        <h2 class="team-name">Dr. Vijay Maan</h2>
+        <p class="team-credential">B.V.Sc &amp; A.H. — Veterinary Doctor</p>        
+      </div>
+
+      <div class="team-card">
+        <div class="team-photo-wrap">
+          <img src="founder.jpg" alt="Dr. Vet Two, Veterinarian at Vet Paw House">
+        </div>
+        <h2 class="team-name">Dr. Sahil Choudhary</h2>
+        <p class="team-credential">B.V.Sc &amp; A.H. — Veterinary Doctor</p>        
+      </div>
+
+      <div class="team-card">
+        <div class="team-photo-wrap">
+          <img src="sandeep.png" alt="Dr. Vet Three, Veterinarian at Vet Paw House">
+        </div>
+        <h2 class="team-name">Dr. Sandeep Singh</h2>
+        <p class="team-credential">B.V.Sc &amp; A.H. — Veterinary Doctor</p>       
+      </div>
+
+      <div class="team-card">
+        <div class="team-photo-wrap">
+          <img src="ekrant.png" alt="Dr. Vet Four, Veterinarian at Vet Paw House">
+        </div>
+        <h2 class="team-name"> Ekrant Aswal</h2>
+        <p class="team-credential">B.V.Sc &amp; A.H. — Veterinary Doctor</p>       
       </div>
     </div>
   </section>
