@@ -50,17 +50,29 @@ window.PET_SCHEDULES = {
     ]
   }
 
-  /* Add the next pet right here (remember the comma after the block above), e.g.:
+   
   ,
-  monty: {
+ dhakkan: {
     vaccination: [
-      { id: 'vax-dhppi', name: 'DHPPi (Core Vaccine)', due: '2026-08-10' }
+      { id: 'vax-FVRCP',   name: 'FVRCP (initial baseline)', due: '2026-11-01' },
+      { id: 'vax-rabies',  name: 'Rabies',                due: '2026-12-01' },
+      { id: 'vax-FVRCP',   name: 'FVRCP (Core Vaccine)',         due: '2026-12-01' },
+      { id: 'vax-booster', name: 'FVRCP (Booster)',          due: '2027-12-01' },
+      { id: 'vax-booster',  name: 'Rabies (Booster)',                due: '2027-12-01' },
+     
     ],
     deworming: [
-      { id: 'dew-1st', name: '1st Deworming', due: '2026-08-10' }
+      { id: 'dew-1st',       name: '1st Deworming',        due: '2026-10-26' },
+      { id: 'dew-2nd',       name: '2nd Deworming',        due: '2026-11-15' },
+      { id: 'dew-3rd',       name: '3rd Deworming',        due: '2026-11-30' },
+      { id: 'dew-4th',       name: '4th Deworming',        due: '2026-12-30' },
+      { id: 'dew-5th',       name: '5th Deworming',        due: '2027-01-30' },
+      { id: 'dew-6th',       name: '6th Deworming',        due: '2027-03-01' },
+      { id: 'dew-7th',       name: '7th Deworming',        due: '2027-06-01' },
+      { id: 'dew-8th',       name: '8th Deworming',        due: '2027-09-01' },
+      { id: 'dew-9th',       name: '9th Deworming',        due: '2027-12-01' },
     ]
   }
-  */
 
 };
 
