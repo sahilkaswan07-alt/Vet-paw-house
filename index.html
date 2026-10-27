@@ -7,16 +7,52 @@
     <link rel="stylesheet" href="index.css">
     <style>
       .link-already-member {
-        display: inline-block;
-        margin-top: 14px;
-        font-size: 0.95rem;
-        color: var(--link-muted);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 18px;
+        padding: 11px 24px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        color: #fff;
         text-decoration: none;
-        transition: color 0.2s ease;
+        border-radius: 999px;
+        border: 2px solid #ffb347;
+        background: rgba(255, 179, 71, 0.18);
+        box-shadow: 0 0 0 0 rgba(255, 179, 71, 0.55), 0 4px 18px rgba(255, 179, 71, 0.25);
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+        animation: memberPulse 2.4s ease-out infinite;
+        transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
       }
-      .link-already-member:hover {
-        color: var(--link-muted-hover);
-        text-decoration: underline;
+      .link-already-member:hover,
+      .link-already-member:focus-visible {
+        background: #ffb347;
+        color: #1c1408;
+        text-shadow: none;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(255, 179, 71, 0.45);
+        animation: none;
+        outline: none;
+      }
+      [data-theme="light"] .link-already-member {
+        color: #7a3e00;
+        background: rgba(255, 179, 71, 0.28);
+        border-color: #e08a00;
+        text-shadow: none;
+      }
+      [data-theme="light"] .link-already-member:hover,
+      [data-theme="light"] .link-already-member:focus-visible {
+        background: #e08a00;
+        color: #fff;
+      }
+      @keyframes memberPulse {
+        0%   { box-shadow: 0 0 0 0 rgba(255, 179, 71, 0.55), 0 4px 18px rgba(255, 179, 71, 0.25); }
+        70%  { box-shadow: 0 0 0 12px rgba(255, 179, 71, 0), 0 4px 18px rgba(255, 179, 71, 0.25); }
+        100% { box-shadow: 0 0 0 0 rgba(255, 179, 71, 0), 0 4px 18px rgba(255, 179, 71, 0.25); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .link-already-member { animation: none; }
       }
       /* footer — same links as the home page, Terms and Privacy pages */
       .site-footer {
