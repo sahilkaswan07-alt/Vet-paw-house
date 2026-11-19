@@ -286,40 +286,7 @@
     </div>
   </div>
 
-  <!-- ①.5 PET ID CARD — downloadable digital ID card + QR code.
-       Edit the fields below to match this pet (same data as the Pet Hero
-       above, plus Owner Name / Owner Contact from the registration form).
-       "Pet ID" and "Member Since" are just simple identifiers you can set
-       once per pet. The QR code always encodes THIS page's own URL, so
-       scanning it (e.g. from a printed tag) opens this pet's profile —
-       no manual editing needed for the QR itself. -->
-  <div class="sec" id="idCardSection">
-    <div class="sec-title"><span class="icon">🪪</span> Pet ID Card</div>
-    <div class="idcard" id="idCard">
-      <div class="idcard-photo-col">
-        <img class="idcard-photo" id="idCardPhoto" src="casper.jpg" alt="Casper">
-        <div class="idcard-code" id="idCardCode">PH-CASPER</div>
-      </div>
-      <div class="idcard-info">
-        <div class="idcard-field"><div class="label">Pet Name</div><div class="value" id="idCardName">Casper</div></div>
-        <div class="idcard-field"><div class="label">Breed</div><div class="value" id="idCardBreed">Pit-Bull</div></div>
-        <div class="idcard-field"><div class="label">Sex</div><div class="value" id="idCardSex">Male</div></div>
-        <div class="idcard-field"><div class="label">Age</div><div class="value" id="idCardAge">2 yrs</div></div>
-        <div class="idcard-field"><div class="label">Weight</div><div class="value" id="idCardWeight">20 kg</div></div>
-        <div class="idcard-field"><div class="label">Member Since</div><div class="value" id="idCardSince">2026</div></div>
-        <div class="idcard-field"><div class="label">Owner Name</div><div class="value" id="idCardOwnerName">sahil choudhary</div></div>
-        <div class="idcard-field"><div class="label">Owner Contact</div><div class="value" id="idCardOwnerContact">+91 7300479727</div></div>
-      </div>
-      <div class="idcard-qr-col">
-        <div class="idcard-qr-box" id="idQrCode"></div>
-        <div class="idcard-qr-label">Scan to open this ID card</div>
-      </div>
-    </div>
-    <div class="idcard-actions">
-      <button class="idcard-btn" onclick="downloadIdCard()">⬇️ Download ID Card (Front &amp; Back)</button>
-      <button class="idcard-btn ghost" onclick="downloadQrOnly()">⬇️ Download QR Only</button>
-    </div>
-  </div>
+ 
 
   <!-- ② VACCINATION SCHEDULE — edit rows per pet -->
  
@@ -360,6 +327,48 @@
       </tbody>
     </table>
   </div>
+
+
+<!-- ①.5 PET ID CARD — downloadable digital ID card + QR code.
+       Edit the fields below to match this pet (same data as the Pet Hero
+       above, plus Owner Name / Owner Contact from the registration form).
+       "Pet ID" and "Member Since" are just simple identifiers you can set
+       once per pet. The QR code always encodes THIS page's own URL, so
+       scanning it (e.g. from a printed tag) opens this pet's profile —
+       no manual editing needed for the QR itself. -->
+  <div class="sec" id="idCardSection">
+    <div class="sec-title"><span class="icon">🪪</span> Pet ID Card</div>
+    <div class="idcard" id="idCard">
+      <div class="idcard-photo-col">
+        <img class="idcard-photo" id="idCardPhoto" src="casper.jpg" alt="Casper">
+        <div class="idcard-code" id="idCardCode">PH-CASPER</div>
+      </div>
+      <div class="idcard-info">
+        <div class="idcard-field"><div class="label">Pet Name</div><div class="value" id="idCardName">Casper</div></div>
+        <div class="idcard-field"><div class="label">Breed</div><div class="value" id="idCardBreed">Pit-Bull</div></div>
+        <div class="idcard-field"><div class="label">Sex</div><div class="value" id="idCardSex">Male</div></div>
+        <div class="idcard-field"><div class="label">Age</div><div class="value" id="idCardAge">2 yrs</div></div>
+        <div class="idcard-field"><div class="label">Weight</div><div class="value" id="idCardWeight">20 kg</div></div>
+        <div class="idcard-field"><div class="label">Member Since</div><div class="value" id="idCardSince">2026</div></div>
+        <div class="idcard-field"><div class="label">Owner Name</div><div class="value" id="idCardOwnerName">sahil choudhary</div></div>
+        <div class="idcard-field"><div class="label">Owner Contact</div><div class="value" id="idCardOwnerContact">+91 7300479727</div></div>
+      </div>
+      <div class="idcard-qr-col">
+        <div class="idcard-qr-box" id="idQrCode"></div>
+        <div class="idcard-qr-label">Scan to open this ID card</div>
+      </div>
+    </div>
+    <div class="idcard-actions">
+      <button class="idcard-btn" onclick="downloadIdCard()">⬇️ Download ID Card (Front &amp; Back)</button>
+      <button class="idcard-btn ghost" onclick="downloadQrOnly()">⬇️ Download QR Only</button>
+    </div>
+  </div>
+
+
+
+
+
+
  
   <!-- ④ DOCUMENT LOCKER — owner can safely store this pet's documents
        (vaccine certificates, medical records, adoption papers, etc.)
@@ -376,8 +385,52 @@
     <input type="file" id="lockerFileInput" accept=".pdf,.jpg,.jpeg,.png,.webp" style="display:none" onchange="handleLockerUpload(event)">
     <div class="locker-note" id="lockerNote">PDF or image, up to 5MB — stored securely for this pet only.</div>
   </div>
+
+
+
+   <!-- ⑦ GALLERY — add <img> tags for each photo -->
+  <div class="sec">
+    <div class="sec-title"><span class="icon">📸</span> Memories & Gallery</div>
+    <div class="gallery-grid" id="galleryGrid">
+      <img src="casper.jpg" alt="Casper memory" onclick="openLightbox(this.src)">
+      <!-- Add more photos here:
+      <img src="photo2.jpg" alt="..." onclick="openLightbox(this.src)">
+      <img src="photo3.jpg" alt="..." onclick="openLightbox(this.src)">
+      -->
+
+      <!-- Owner upload tile — always rendered last, state toggled by JS -->
+      <div class="upload-tile" id="uploadTile" onclick="handleUploadTileClick()">
+        <div class="up-icon">📷</div>
+        <div class="up-label" id="uploadLabel">Add a Memory</div>
+        <div class="up-sub" id="uploadSub">1 photo every 15 days</div>
+      </div>
+      <input type="file" id="galleryFileInput" accept="image/*" style="display:none" onchange="handleGalleryUpload(event)">
+    </div>
+    <div class="gallery-note" id="galleryNote"></div>
+    <!-- If no photos yet, use this instead:
+    <div class="gallery-empty">No memories added yet 🐾 — photos will appear here soon.</div>
+    -->
+  </div>
  
-  <!-- ⑤ BODY CONDITION SCORE (BCS) — monthly 5-question check-in -->
+  
+  <!-- ⑥ AUDIO CALL — coming soon -->
+  <div class="sec">
+    <div class="sec-title">
+      <span class="icon">📞</span> Audio Call with Us
+      <span class="badge-soon">live</span>
+    </div>
+    <div class="coming-soon-wrap">
+      <div class="cs-icon">🎙️</div>
+      <div class="cs-title">Talk to our pet care team</div>
+      <div class="cs-sub">Book a live audio call with our vets and caretakers — directly from your pet's box. We're working on it!</div>
+       <a href="audioconsult.html"><div class="cs-pill">Book audio consult</div> </a>   
+    </div>
+  </div>
+ 
+ 
+
+
+<!-- ⑤ BODY CONDITION SCORE (BCS) — monthly 5-question check-in -->
   <div class="sec">
     <div class="sec-title"><span class="icon">📏</span> Monthly Body Condition Score</div>
     <div class="bcs-intro">Answer these 5 quick questions once a month to check Casper's body condition using the vet-standard 9-point BCS scale — the same simple checks a vet uses at a routine exam.</div>
@@ -451,43 +504,10 @@
     <div id="bcsHistoryWrap"></div>
   </div>
 
-  <!-- ⑥ AUDIO CALL — coming soon -->
-  <div class="sec">
-    <div class="sec-title">
-      <span class="icon">📞</span> Audio Call with Us
-      <span class="badge-soon">live</span>
-    </div>
-    <div class="coming-soon-wrap">
-      <div class="cs-icon">🎙️</div>
-      <div class="cs-title">Talk to our pet care team</div>
-      <div class="cs-sub">Book a live audio call with our vets and caretakers — directly from your pet's box. We're working on it!</div>
-       <a href="audioconsult.html"><div class="cs-pill">Book audio consult</div> </a>   
-    </div>
-  </div>
- 
-  <!-- ⑦ GALLERY — add <img> tags for each photo -->
-  <div class="sec">
-    <div class="sec-title"><span class="icon">📸</span> Memories & Gallery</div>
-    <div class="gallery-grid" id="galleryGrid">
-      <img src="casper.jpg" alt="Casper memory" onclick="openLightbox(this.src)">
-      <!-- Add more photos here:
-      <img src="photo2.jpg" alt="..." onclick="openLightbox(this.src)">
-      <img src="photo3.jpg" alt="..." onclick="openLightbox(this.src)">
-      -->
 
-      <!-- Owner upload tile — always rendered last, state toggled by JS -->
-      <div class="upload-tile" id="uploadTile" onclick="handleUploadTileClick()">
-        <div class="up-icon">📷</div>
-        <div class="up-label" id="uploadLabel">Add a Memory</div>
-        <div class="up-sub" id="uploadSub">1 photo every 15 days</div>
-      </div>
-      <input type="file" id="galleryFileInput" accept="image/*" style="display:none" onchange="handleGalleryUpload(event)">
-    </div>
-    <div class="gallery-note" id="galleryNote"></div>
-    <!-- If no photos yet, use this instead:
-    <div class="gallery-empty">No memories added yet 🐾 — photos will appear here soon.</div>
-    -->
-  </div>
+
+
+
  
 </div><!-- /page -->
  
